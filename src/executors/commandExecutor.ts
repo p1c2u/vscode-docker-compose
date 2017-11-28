@@ -4,21 +4,28 @@ import * as vscode from "vscode";
 
 export class CommandExecutor {
 
+    private terminals: { [id: string]: vscode.Terminal } = {};
     private _cwd: string;
 
     constructor(cwd: string = null) {
         this._cwd = cwd;
+
+        if ('onDidCloseTerminal' in <any>vscode.window) {
+            (<any>vscode.window).onDidCloseTerminal((terminal) => {
+                this.onDidCloseTerminal(terminal);
+            });
+        }
     }
 
-    public static runInTerminal(command: string, addNewLine: boolean = true, terminal: string = "Docker Compose"): void {
+    public runInTerminal(command: string, addNewLine: boolean = true, terminal: string = "Docker Compose"): void {
         if (this.terminals[terminal] === undefined ) {
             this.terminals[terminal] = vscode.window.createTerminal(terminal);
+            this.terminals[terminal].sendText(command, addNewLine);
         }
         this.terminals[terminal].show();
-        this.terminals[terminal].sendText(command, addNewLine);
     }
 
-    public static exec(command: string) {
+    public exec(command: string) {
         return exec(command);
     }
 
@@ -26,9 +33,7 @@ export class CommandExecutor {
         return execSync(command, {cwd: this._cwd,  encoding: "utf8" });
     }
 
-    public static onDidCloseTerminal(closedTerminal: vscode.Terminal): void {
+    public onDidCloseTerminal(closedTerminal: vscode.Terminal): void {
         delete this.terminals[closedTerminal.name];
     }
-
-    private static terminals: { [id: string]: vscode.Terminal } = {};
 }

@@ -26,6 +26,16 @@ export function activate(context: vscode.ExtensionContext) {
         telemetryClient.sendEvent("refreshDockerComposeTree");
     });
 
+    let attachService = vscode.commands.registerCommand("docker-compose.attachService", (treeItem) => {
+        dockerComposeTreeDataProvider.attachService(treeItem.label);
+        telemetryClient.sendEvent("attachService");
+    });
+
+    let shellService = vscode.commands.registerCommand("docker-compose.shellService", (treeItem) => {
+        dockerComposeTreeDataProvider.shellService(treeItem.label);
+        telemetryClient.sendEvent("shellService");
+    });
+
     let upService = vscode.commands.registerCommand("docker-compose.upService", (treeItem) => {
         dockerComposeTreeDataProvider.upService(treeItem.label);
         telemetryClient.sendEvent("upService");
@@ -62,6 +72,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(refreshDockerComposeTree);
+    context.subscriptions.push(attachService);
+    context.subscriptions.push(shellService);
     context.subscriptions.push(upService);
     context.subscriptions.push(startService);
     context.subscriptions.push(stopService);

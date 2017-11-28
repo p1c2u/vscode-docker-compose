@@ -22,6 +22,19 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
         return this.execSync(composeCommand);
     }
 
+    public attach(serviceName: string): void {
+        let command = this.getBaseCommand();
+        let composeCommand = `docker attach ${serviceName}`
+        this.runInTerminal(composeCommand, true, serviceName);
+    }
+
+    public shell(serviceName: string): void {
+        let command = this.getBaseCommand();
+        let composeCommand = `${command} exec ${serviceName} /bin/sh`
+        let terminalName = `${serviceName} shell`
+        this.runInTerminal(composeCommand, true, terminalName);
+    }
+
     public up(serviceName: string): string {
         let command = this.getBaseCommand();
         let composeCommand = `${command} up -d --no-recreate ${serviceName}`
