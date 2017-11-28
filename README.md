@@ -32,6 +32,10 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.1.1
+
+* Attach and shell commands added
+
 ### 0.1.0
 
 Initial release
