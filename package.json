@@ -1,0 +1,175 @@
+{
+    "name": "docker-compose",
+    "displayName": "Docker Compose",
+    "description": "Manage Docker Compose services",
+    "icon": "images/icon.png",
+    "version": "0.1.0",
+    "publisher": "p1c2u",
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.13.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "docker",
+        "compose",
+        "container",
+        "image"
+    ],
+    "bugs": {
+        "url": "https://github.com/p1c2u/vscode-docker-compose/issues",
+        "email": "maciag.artur@gmail.com"
+    },
+    "homepage": "https://github.com/p1c2u/vscode-docker-compose",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/p1c2u/vscode-docker-compose.git"
+    },
+    "activationEvents": [
+        "workspaceContains:**/docker-compose.yml"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "views": {
+            "explorer": [
+                {
+                    "id": "dockerCompose",
+                    "name": "Docker Compose",
+                    "when": "config.docker-compose.showDockerCompose == true"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "docker-compose.refreshDockerComposeTree",
+                "title": "Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "docker-compose.upService",
+                "title": "Up"
+            },
+            {
+                "command": "docker-compose.startService",
+                "title": "Start"
+            },
+            {
+                "command": "docker-compose.stopService",
+                "title": "Stop"
+            },
+            {
+                "command": "docker-compose.restartService",
+                "title": "Restart"
+            },
+            {
+                "command": "docker-compose.buildService",
+                "title": "Build"
+            },
+            {
+                "command": "docker-compose.killService",
+                "title": "Kill"
+            },
+            {
+                "command": "docker-compose.downService",
+                "title": "Down"
+            }
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "docker-compose.refreshDockerComposeTree",
+                    "when": "view == dockerCompose",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "docker-compose.upService",
+                    "when": "view == dockerCompose",
+                    "group": "docker-compose@0"
+                },
+                {
+                    "command": "docker-compose.startService",
+                    "when": "view == dockerCompose",
+                    "group": "docker-compose@1"
+                },
+                {
+                    "command": "docker-compose.stopService",
+                    "when": "view == dockerCompose",
+                    "group": "docker-compose@2"
+                },
+                {
+                    "command": "docker-compose.restartService",
+                    "when": "view == dockerCompose",
+                    "group": "docker-compose@3"
+                },
+                {
+                    "command": "docker-compose.buildService",
+                    "when": "view == dockerCompose",
+                    "group": "docker-compose@4"
+                },
+                {
+                    "command": "docker-compose.killService",
+                    "when": "view == dockerCompose",
+                    "group": "docker-compose@5"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Docker Compose configuration",
+            "properties": {
+                "docker-compose.projectName": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Docker Compose project name."
+                },
+                "docker-compose.autoRefreshInterval": {
+                    "type": "integer",
+                    "default": 10000,
+                    "description": "Docker Compose auto refresh interval."
+                },
+                "docker-compose.showDockerCompose": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Show Docker Compose explorer."
+                },
+                "docker-compose.enableTelemetry": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable telemetry"
+                },
+                "docker-compose.files": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": ["docker-compose.yml"],
+                    "description": "Specify Docker Compose files."
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "applicationinsights": "^0.20.1",
+        "yaml-config-loader": "^2.0.1"
+    }
+}
