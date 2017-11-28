@@ -11,6 +11,12 @@ Docker Compose Extension for Visual Studio Code
 * [Docker](https://www.docker.com/)
 * [Docker Compose](https://docs.docker.com/compose/)
 
+## Usage
+
+* Manage Docker Compose services in Explorer
+
+![explorer](images/explorer.png)
+
 ## Extension Settings
 
 The extension contributes the following settings:
