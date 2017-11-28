@@ -1,17 +1,20 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { WorkspaceConfigurator } from "../configurators/workspaceConfigurator";
+import { DockerCommandExecutor } from "../executors/dockerCommandExecutor";
 import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
 import { DockerComposeContainer } from "../models/dockerComposeContainer";
 import { DockerComposeService } from "../models/dockerComposeService";
 
 export class DockerComposeProvider {
 
-    private _commandExecutor: DockerComposeCommandExecutor;
+    private _dockerComposeCommandExecutor: DockerComposeCommandExecutor;
+    private _dockerCommandExecutor: DockerCommandExecutor;
     private _projectName: string;
 
     constructor(executor: DockerComposeCommandExecutor) {
-        this._commandExecutor = executor;
+        this._dockerComposeCommandExecutor = executor;
+        this._dockerCommandExecutor = new DockerCommandExecutor();
 
         const configuration = WorkspaceConfigurator.getConfiguration();
         const projectNameUnsafe: string = configuration.get<string>("projectName") || path.basename(vscode.workspace.rootPath);
@@ -19,7 +22,7 @@ export class DockerComposeProvider {
     }
 
     public getServices(): DockerComposeService[] {
-        let servicesString = this._commandExecutor.getConnfigServices();
+        let servicesString = this._dockerComposeCommandExecutor.getConnfigServices();
         let linesString = servicesString.split(/[\r\n]+/g).filter((item) => item)
         return linesString.map(function (serviceString, index, array) {
             return new DockerComposeService(serviceString);
@@ -27,7 +30,7 @@ export class DockerComposeProvider {
     }
 
     public getContainers(): DockerComposeContainer[] {
-        let resultString = this._commandExecutor.getPs();
+        let resultString = this._dockerComposeCommandExecutor.getPs();
         let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
         let containersString  = linesString.slice(2);
         return containersString.map(function (containerString, index, array) {
@@ -49,32 +52,45 @@ export class DockerComposeProvider {
         return result[0];
     }
 
+    public attachContainer(containerName: string): void {
+        this._dockerCommandExecutor.attach(containerName);
+    }
+
+    public attachService(serviceName: string, num: number = 1): void {
+        let containerName = this._projectName + '_' + serviceName + '_' + num;
+        this.attachContainer(containerName);
+    }
+
+    public shellService(serviceName: string): void {
+        this._dockerComposeCommandExecutor.shell(serviceName);
+    }
+
     public upService(serviceName: string): void {
-        this._commandExecutor.up(serviceName);
+        this._dockerComposeCommandExecutor.up(serviceName);
     }
 
     public startService(serviceName: string): void {
-        this._commandExecutor.start(serviceName);
+        this._dockerComposeCommandExecutor.start(serviceName);
     }
 
     public stopService(serviceName: string): void {
-        this._commandExecutor.stop(serviceName);
+        this._dockerComposeCommandExecutor.stop(serviceName);
     }
 
     public restartService(serviceName: string): void {
-        this._commandExecutor.restart(serviceName);
+        this._dockerComposeCommandExecutor.restart(serviceName);
     }
 
     public buildService(serviceName: string): void {
-        this._commandExecutor.build(serviceName);
+        this._dockerComposeCommandExecutor.build(serviceName);
     }
 
     public killService(serviceName: string): void {
-        this._commandExecutor.kill(serviceName);
+        this._dockerComposeCommandExecutor.kill(serviceName);
     }
 
     public downContainers(): void {
-        this._commandExecutor.down();
+        this._dockerComposeCommandExecutor.down();
     }
 
 }

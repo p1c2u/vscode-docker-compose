@@ -78,6 +78,14 @@ export class DockerComposeTreeDataProvider extends AutoRefreshTree<DockerCompose
         return Promise.resolve(this.cachedServices);
     }
 
+    public attachService(serviceName: string): void {
+        this.provider.attachService(serviceName);
+    }
+
+    public shellService(serviceName: string): void {
+        this.provider.shellService(serviceName);
+    }
+
     public upService(serviceName: string): void {
         this.provider.upService(serviceName);
     }
@@ -128,16 +136,18 @@ export class DockerComposeTreeDataProvider extends AutoRefreshTree<DockerCompose
         let services = this.provider.getServices();
 
         return services.map((service, index, array) => {
-            let state = ContainerState.Exit;
             let container = this.provider.getContainer(service.name);
             if (container != null) {
-                if (container.state == ContainerState.Up) {
-                    state = container.state;
-                }
+                const imageState = container.state == ContainerState.Up ? "service-up.png": "service-exit.png";
+                const image = this.context.asAbsolutePath(path.join("resources", imageState));
+                const contextValue = container.state == ContainerState.Up ? "runningContainer": "exitedContainer";
+                return new DockerComposeTreeItem(service.name, image, contextValue);
+            } else {
+                const imageState = "service-exit.png";
+                const image = this.context.asAbsolutePath(path.join("resources", imageState));
+                const contextValue = "exitedContainer";
+                return new DockerComposeTreeItem(service.name, image, contextValue);
             }
-            const imageState = state == ContainerState.Up ? "service-up.png": "service-exit.png";
-            const image = this.context.asAbsolutePath(path.join("resources", imageState));
-            return new DockerComposeTreeItem(service.name, image);
         });
     }
 }

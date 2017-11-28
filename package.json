@@ -51,6 +51,14 @@
                 }
             },
             {
+                "command": "docker-compose.attachService",
+                "title": "Attach"
+            },
+            {
+                "command": "docker-compose.shellService",
+                "title": "Shell"
+            },
+            {
                 "command": "docker-compose.upService",
                 "title": "Up"
             },
@@ -89,34 +97,44 @@
             ],
             "view/item/context": [
                 {
-                    "command": "docker-compose.upService",
-                    "when": "view == dockerCompose",
+                    "command": "docker-compose.attachService",
+                    "when": "view == dockerCompose && viewItem == runningContainer",
                     "group": "docker-compose@0"
                 },
                 {
-                    "command": "docker-compose.startService",
-                    "when": "view == dockerCompose",
+                    "command": "docker-compose.shellService",
+                    "when": "view == dockerCompose && viewItem == runningContainer",
                     "group": "docker-compose@1"
                 },
                 {
-                    "command": "docker-compose.stopService",
-                    "when": "view == dockerCompose",
+                    "command": "docker-compose.upService",
+                    "when": "view == dockerCompose && viewItem == exitedContainer",
                     "group": "docker-compose@2"
                 },
                 {
-                    "command": "docker-compose.restartService",
-                    "when": "view == dockerCompose",
+                    "command": "docker-compose.startService",
+                    "when": "view == dockerCompose && viewItem == exitedContainer",
                     "group": "docker-compose@3"
+                },
+                {
+                    "command": "docker-compose.stopService",
+                    "when": "view == dockerCompose && viewItem == runningContainer",
+                    "group": "docker-compose@4"
+                },
+                {
+                    "command": "docker-compose.restartService",
+                    "when": "view == dockerCompose && viewItem == runningContainer",
+                    "group": "docker-compose@5"
                 },
                 {
                     "command": "docker-compose.buildService",
                     "when": "view == dockerCompose",
-                    "group": "docker-compose@4"
+                    "group": "docker-compose@6"
                 },
                 {
                     "command": "docker-compose.killService",
-                    "when": "view == dockerCompose",
-                    "group": "docker-compose@5"
+                    "when": "view == dockerCompose && viewItem == runningContainer",
+                    "group": "docker-compose@7"
                 }
             ]
         },

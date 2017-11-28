@@ -8,8 +8,6 @@ export class DockerComposeTreeItem extends TreeItem {
 	// 	dark: path.join(__filename, '..', '..', '..', 'resources', 'dark')
 	// };
 
-    contextValue = 'dependency';
-
     command = {
         command: "docker-compose.getService",
         title: this.label,
@@ -19,6 +17,7 @@ export class DockerComposeTreeItem extends TreeItem {
     constructor(
         public readonly label: string,
         public readonly iconPath: string,
+        public readonly contextValue?: string,
 		public readonly collapsibleState?: TreeItemCollapsibleState,
 	) {
 		super(label, collapsibleState);
