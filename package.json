@@ -162,6 +162,11 @@
                     "default": false,
                     "description": "Enable telemetry"
                 },
+                "docker-compose.shell": {
+                    "type": "string",
+                    "default": "/bin/sh",
+                    "description": "Specify shell to use inside Dcoker Container."
+                },
                 "docker-compose.files": {
                     "type": "array",
                     "items": {

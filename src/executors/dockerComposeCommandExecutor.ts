@@ -3,11 +3,21 @@ import { WorkspaceConfigurator } from "../configurators/workspaceConfigurator";
 
 export class DockerComposeCommandExecutor extends CommandExecutor {
 
-    private getBaseCommand(): string {
-        const configuration = WorkspaceConfigurator.getConfiguration();
-        const files: string[] = configuration.get<string[]>("files");
+    private _files: string[];
+    private _shell: string;
 
-        return files.reduce((myString, files) => myString + ' -f ' + files, 'docker-compose');
+    constructor(files: string[], shell: string = "/bin/sh", cwd: string = null) {
+        super(cwd)
+        this._files = files;
+        this._shell = shell;
+    }
+
+    private getBaseCommand(): string {
+        return this._files.reduce((myString, files) => myString + ' -f ' + files, 'docker-compose');
+    }
+
+    private getShellCommand(): string {
+        return this._shell;
     }
 
     public getConnfigServices(): string {
@@ -22,15 +32,10 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
         return this.execSync(composeCommand);
     }
 
-    public attach(serviceName: string): void {
-        let command = this.getBaseCommand();
-        let composeCommand = `docker attach ${serviceName}`
-        this.runInTerminal(composeCommand, true, serviceName);
-    }
-
     public shell(serviceName: string): void {
         let command = this.getBaseCommand();
-        let composeCommand = `${command} exec ${serviceName} /bin/sh`
+        let shellCommand = this.getShellCommand();
+        let composeCommand = `${command} exec ${serviceName} ${shellCommand}`
         let terminalName = `${serviceName} shell`
         this.runInTerminal(composeCommand, true, terminalName);
     }

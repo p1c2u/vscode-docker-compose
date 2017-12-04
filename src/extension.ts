@@ -10,10 +10,12 @@ import { DockerComposeTreeDataProvider } from "./providers/dockerComposeTreeData
 export function activate(context: vscode.ExtensionContext) {
     const configuration = WorkspaceConfigurator.getConfiguration();
 
+    const files = configuration.get<string[]>("files");
+    const shell = configuration.get<string>("shell");
     const isTelemetryEnabled = configuration.get<boolean>("enableTelemetry");
     const telemetryClient = isTelemetryEnabled ? new AppInsightsClient("1234-1234-1234-1234") : new NullClient();
 
-    const dockerComposeCommandExecutor = new DockerComposeCommandExecutor(vscode.workspace.rootPath);
+    const dockerComposeCommandExecutor = new DockerComposeCommandExecutor(files, shell, vscode.workspace.rootPath);
     const dockerComposeProvider = new DockerComposeProvider(dockerComposeCommandExecutor);
     const dockerComposeTreeDataProvider = new DockerComposeTreeDataProvider(context, dockerComposeProvider);
 
