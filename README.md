@@ -25,7 +25,7 @@ The extension contributes the following settings:
 * `docker-compose.projectName`: Compose project name (Default is basename of the workspace directory)
 * `docker-compose.showDockerCompose`: Show Docker Compose navigation view. (Default is `True`)
 * `docker-compose.files`: Docker Compose files. You can define array of files. (Default is `["docker-compose.yml"]`).
-* `docker-compose.shell`: Specify shell to use inside Dcoker Container. (Default is `"/bin/sh"`).
+* `docker-compose.shell`: Specify shell to use inside Docker Container. (Default is `"/bin/sh"`).
 
 ## Known Issues
 

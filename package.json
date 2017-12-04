@@ -165,7 +165,7 @@
                 "docker-compose.shell": {
                     "type": "string",
                     "default": "/bin/sh",
-                    "description": "Specify shell to use inside Dcoker Container."
+                    "description": "Specify shell to use inside Docker Container."
                 },
                 "docker-compose.files": {
                     "type": "array",
