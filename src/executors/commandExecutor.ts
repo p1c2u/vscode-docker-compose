@@ -26,7 +26,7 @@ export class CommandExecutor {
     }
 
     public exec(command: string) {
-        return exec(command);
+        return exec(command, {cwd: this._cwd,  encoding: "utf8" });
     }
 
     public execSync(command: string) {
