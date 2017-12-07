@@ -37,7 +37,7 @@
                 {
                     "id": "dockerCompose",
                     "name": "Docker Compose",
-                    "when": "config.docker-compose.showDockerCompose == true"
+                    "when": "config.docker-compose.showExplorer == true"
                 }
             ]
         },
@@ -196,7 +196,7 @@
                     "default": 10000,
                     "description": "Docker Compose auto refresh interval."
                 },
-                "docker-compose.showDockerCompose": {
+                "docker-compose.showExplorer": {
                     "type": "boolean",
                     "default": true,
                     "description": "Show Docker Compose explorer."
