@@ -13,8 +13,9 @@ export class Service {
     }
 
     public getContainers(): Container[] {
-        let pattern = this.project.name + '_' + this.name + '_';
         let containers = this.project.getContainers();
+
+        let pattern = this.project.name + '_' + this.name + '_';
         return containers.filter((container) => {
             return container.name.includes(pattern);
         });

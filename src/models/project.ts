@@ -6,13 +6,29 @@ import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandE
 
 export class Project {
 
+    private _services: Service[] | undefined;
+    private _containers: Container[] | undefined;
+
     constructor(
         public readonly name: string,
         private readonly executor: DockerComposeCommandExecutor
     ) {
+        this._services = undefined;
+        this._containers = undefined;
     }
 
-    public getServices(): Service[] {
+    public getServices(force: boolean = false): Service[] {
+        if (this._services === undefined || force) {
+            this.refreshServices();
+        }
+        return this._services;
+    }
+
+    public refreshServices(): void {
+        this._services = this._getServices();
+    }
+
+    private _getServices(): Service[] {
         let servicesString = this.executor.getConnfigServices();
         let linesString = servicesString.split(/[\r\n]+/g).filter((item) => item)
         let project = this;
@@ -22,7 +38,18 @@ export class Project {
         });
     }
 
-    public getContainers(): Container[] {
+    public getContainers(force: boolean = false): Container[] {
+        if (this._containers === undefined || force) {
+            this.refreshContainers();
+        }
+        return this._containers;
+    }
+
+    public refreshContainers(): void {
+        this._containers = this._getContainers();
+    }
+
+    private _getContainers(): Container[] {
         let resultString = this.executor.getPs();
         let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
         let containersString  = linesString.slice(2);
@@ -34,6 +61,13 @@ export class Project {
             const state = items[2].startsWith('Up') ? ContainerState.Up : ContainerState.Exit;
             const ports = items.length == 4 ? items[3].split(', ') : [];
             return new Container(name, command, state, ports, executor); 
+        });
+    }
+
+    public filterServiceContainers(serviceName: string, containers: Container[]): Container[] {
+        let pattern = this.name + '_' + serviceName + '_';
+        return containers.filter((container) => {
+            return container.name.includes(pattern);
         });
     }
 

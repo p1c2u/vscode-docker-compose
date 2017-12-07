@@ -17,6 +17,7 @@ export class ProjectNode extends ExplorerNode {
     async getChildren(): Promise<ExplorerNode[]> {
         this.resetChildren();
 
+        this.project.refreshContainers();
         const services = this.project.getServices();
 
         this.children = services

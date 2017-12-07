@@ -41,6 +41,7 @@ The extension is in early stage. Feel free to report bugs.
 * Tree view explorer
 * Multi-root support
 * Service's containers support
+* Refresh performance increased
 
 ### 0.1.1
 

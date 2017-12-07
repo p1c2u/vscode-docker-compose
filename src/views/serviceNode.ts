@@ -23,7 +23,9 @@ export class ServiceNode extends ExplorerNode {
     async getChildren(): Promise<ExplorerNode[]> {
         this.resetChildren();
 
-        const containers = this.service.getContainers();
+        const projectContainers = this.service.project.getContainers();
+
+        const containers = this.service.project.filterServiceContainers(this.service.name, projectContainers);
 
         let context = this.context;
         this.children = containers
