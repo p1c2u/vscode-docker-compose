@@ -31,7 +31,7 @@ export class DockerComposeExplorer implements TreeDataProvider<ExplorerNode> {
         ) {
             let projects = workspace.workspaceFolders.map((folder) => {
                 let name = projectNames[folder.index] || folder.name.replace(/[^\w\s]/gi, '');
-                let executor = new DockerComposeCommandExecutor(files, shell, folder.uri.path);
+                let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.path);
                 return new Project(name, executor);
             });
             this._root = new ProjectsNode(this.context, projects);

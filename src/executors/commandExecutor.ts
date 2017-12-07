@@ -6,9 +6,11 @@ export class CommandExecutor {
 
     private terminals: { [id: string]: vscode.Terminal } = {};
     private _cwd: string;
+    private _env: object;
 
-    constructor(cwd: string = null) {
+    constructor(cwd: string = null, env: object = {}) {
         this._cwd = cwd;
+        this._env = env;
 
         if ('onDidCloseTerminal' in <any>vscode.window) {
             (<any>vscode.window).onDidCloseTerminal((terminal) => {
@@ -26,11 +28,11 @@ export class CommandExecutor {
     }
 
     public exec(command: string) {
-        return exec(command, {cwd: this._cwd,  encoding: "utf8" });
+        return exec(command, {env: this._env, cwd: this._cwd,  encoding: "utf8" });
     }
 
     public execSync(command: string) {
-        return execSync(command, {cwd: this._cwd,  encoding: "utf8" });
+        return execSync(command, {env: this._env, cwd: this._cwd,  encoding: "utf8" });
     }
 
     public onDidCloseTerminal(closedTerminal: vscode.Terminal): void {

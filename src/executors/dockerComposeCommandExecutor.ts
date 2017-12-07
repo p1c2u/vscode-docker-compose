@@ -6,8 +6,8 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
     private _files: string[];
     private _shell: string;
 
-    constructor(files: string[], shell: string = "/bin/sh", cwd: string = null) {
-        super(cwd)
+    constructor(name: string, files: string[], shell: string = "/bin/sh", cwd: string = null) {
+        super(cwd, {COMPOSE_PROJECT_NAME: name})
         this._files = files;
         this._shell = shell;
     }
