@@ -40,9 +40,15 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
         this.runInTerminal(composeCommand, true, terminalName);
     }
 
-    public up(serviceName: string): string {
+    public up(serviceName?: string): string {
         let command = this.getBaseCommand();
-        let composeCommand = `${command} up -d --no-recreate ${serviceName}`
+        let composeCommand = serviceName === undefined ? `${command} up -d --no-recreate` : `${command} up -d --no-recreate ${serviceName}`;
+        return this.execSync(composeCommand);
+    }
+
+    public down(serviceName?: string): string {
+        let command = this.getBaseCommand();
+        let composeCommand = serviceName === undefined ? `${command} down` : `${command} down ${serviceName}`;
         return this.execSync(composeCommand);
     }
 
@@ -73,12 +79,6 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
     public kill(serviceName: string): string {
         let command = this.getBaseCommand();
         let composeCommand = `${command} kill ${serviceName}`
-        return this.execSync(composeCommand);
-    }
-
-    public down(): string {
-        let command = this.getBaseCommand();
-        let composeCommand = `${command} down`
         return this.execSync(composeCommand);
     }
 
