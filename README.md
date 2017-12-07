@@ -36,6 +36,12 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### Not released
+
+* Tree view explorer
+* Multi-root support
+* Service's containers support
+
 ### 0.1.1
 
 * Attach and shell commands added
