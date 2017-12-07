@@ -1,3 +1,10 @@
+## 0.2.0
+
+- Tree view explorer
+- Multi-root support
+- Service's containers support
+- Refresh performance increased
+
 ## 0.1.1
 
 - Attach and shell commands added

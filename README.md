@@ -36,7 +36,7 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
-### Not released
+### 0.2.0
 
 * Tree view explorer
 * Multi-root support
