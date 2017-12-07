@@ -4,7 +4,10 @@ Docker Compose Extension for Visual Studio Code
 
 ## Features
 
-* Manage Docker Compose services
+* Manage Compose projects (Up, Down).
+* Manage Compose services (Up, Shell, Attach, Start, Stop, Restart, Build, Kill, Down).
+* Manage Compose services's containers (Attach, Start, Kill).
+* Multi-root support.
 
 ## Requirements
 
@@ -13,7 +16,7 @@ Docker Compose Extension for Visual Studio Code
 
 ## Usage
 
-* Manage Docker Compose services in Explorer
+* Docker Compose Explorer
 
 ![explorer](images/explorer.png)
 
@@ -22,8 +25,8 @@ Docker Compose Extension for Visual Studio Code
 The extension contributes the following settings:
 
 * `docker-compose.autoRefreshInterval`: Interval (in milliseconds) to auto-refresh containers list. Set 0 to disable auto-refresh. (Default is `10000`)
-* `docker-compose.projectName`: Compose project name (Default is basename of the workspace directory)
-* `docker-compose.showDockerCompose`: Show Docker Compose navigation view. (Default is `True`)
+* `docker-compose.projectNames`: Override Docker Compose project name for each workspace root (Default is basename of the workspace directory).
+* `docker-compose.showExplorer`: Show Docker Compose explorer view. (Default is `True`)
 * `docker-compose.files`: Docker Compose files. You can define array of files. (Default is `["docker-compose.yml"]`).
 * `docker-compose.shell`: Specify shell to use inside Docker Container. (Default is `"/bin/sh"`).
 
