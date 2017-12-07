@@ -1,5 +1,6 @@
 "use strict";
 import { TreeItem, TreeDataProvider, EventEmitter, Event, workspace, ExtensionContext } from "vscode";
+import { AutoRefreshTree } from "../explorers/autoRefreshTree";
 import { Project } from "../models/project";
 import { ContainerNode } from "../views/containerNode";
 import { ProjectNode } from "../views/projectNode";
@@ -8,27 +9,18 @@ import { ServiceNode } from "../views/serviceNode";
 import { ExplorerNode } from "../views/explorerNode";
 import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
 
-export class DockerComposeExplorer implements TreeDataProvider<ExplorerNode> {
+export class DockerComposeExplorer extends AutoRefreshTree<any> implements TreeDataProvider<ExplorerNode> {
     
         private _root?: ExplorerNode;
         private _loading: Promise<void> | undefined;
-    
-        private _onDidChangeAutoRefresh = new EventEmitter<void>();
-        public get onDidChangeAutoRefresh(): Event<void> {
-            return this._onDidChangeAutoRefresh.event;
-        }
-    
-        private _onDidChangeTreeData = new EventEmitter<ExplorerNode>();
-        public get onDidChangeTreeData(): Event<ExplorerNode> {
-            return this._onDidChangeTreeData.event;
-        }
-    
+
         constructor(
-            private context: ExtensionContext,
+            context: ExtensionContext,
             private files: string[],
             private shell: string,
             private projectNames: string[]
         ) {
+            super(context);
             let projects = workspace.workspaceFolders.map((folder) => {
                 let name = projectNames[folder.index] || folder.name.replace(/[^\w\s]/gi, '');
                 let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.path);
@@ -49,10 +41,6 @@ export class DockerComposeExplorer implements TreeDataProvider<ExplorerNode> {
     
         async getTreeItem(node: ExplorerNode): Promise<TreeItem> {
             return node.getTreeItem();
-        }
-
-        async refresh(root?: ExplorerNode) {
-            this._onDidChangeTreeData.fire();
         }
 
         public upProject(node: ProjectNode): void {

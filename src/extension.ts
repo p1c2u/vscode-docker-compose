@@ -11,6 +11,7 @@ import { ProjectsNode } from "./views/projectsNode";
 export function activate(context: vscode.ExtensionContext) {
     const configuration = WorkspaceConfigurator.getConfiguration();
 
+    const interval = WorkspaceConfigurator.getConfiguration().get<number>("autoRefreshInterval");
     const files = configuration.get<string[]>("files");
     const shell = configuration.get<string>("shell");
     const projectNames = configuration.get<string[]>("projectNames");
@@ -18,6 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
     const telemetryClient = isTelemetryEnabled ? new AppInsightsClient("1234-1234-1234-1234") : new NullClient();
 
     const explorer = new DockerComposeExplorer(context, files, shell, projectNames);
+    explorer.setAutoRefresh(interval);
 
     vscode.window.registerTreeDataProvider("dockerCompose", explorer);
 
