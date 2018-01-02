@@ -40,10 +40,10 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
         this.runInTerminal(composeCommand, true, terminalName);
     }
 
-    public up(serviceName?: string): string {
+    public up(serviceName?: string): void {
         let command = this.getBaseCommand();
-        let composeCommand = serviceName === undefined ? `${command} up -d --no-recreate` : `${command} up -d --no-recreate ${serviceName}`;
-        return this.execSync(composeCommand);
+        let composeCommand = serviceName === undefined ? `${command} up --no-recreate` : `${command} up --no-recreate ${serviceName}`;
+        this.runInTerminal(composeCommand, true, serviceName);
     }
 
     public down(serviceName?: string): string {
