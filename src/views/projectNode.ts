@@ -1,8 +1,9 @@
 'use strict';
-import { TreeItem, TreeItemCollapsibleState, ExtensionContext } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, ExtensionContext, window } from 'vscode';
 import { ResourceType } from "../enums";
 import { Project } from "../models/project";
 import { ExplorerNode } from '../views/explorerNode';
+import { MessageNode } from '../views/messageNode';
 import { ServiceNode } from "../views/serviceNode";
 
 export class ProjectNode extends ExplorerNode {
@@ -17,8 +18,19 @@ export class ProjectNode extends ExplorerNode {
     async getChildren(): Promise<ExplorerNode[]> {
         this.resetChildren();
 
-        this.project.refreshContainers();
-        const services = this.project.getServices();
+        let services;
+
+        try {
+            this.project.refreshContainers();
+        } catch (error) {
+            return [new MessageNode(this.context, 'Failed to retrieve project containers')];
+        }
+
+        try {
+            services = this.project.getServices();
+        } catch (error) {
+            return [new MessageNode(this.context, 'Failed to list project services')];
+        }
 
         this.children = services
             .map(service => new ServiceNode(this.context, service));

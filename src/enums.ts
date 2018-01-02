@@ -1,6 +1,7 @@
 'use strict';
 
 export enum ResourceType {
+    Message = "docker-compose:message",
     Projects = "docker-compose:projects",
     Project = "docker-compose:project",
     Services = "docker-compose:services",
