@@ -36,6 +36,11 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.2.1
+
+* List services error handing fix
+* Up service attached
+
 ### 0.2.0
 
 * Tree view explorer
