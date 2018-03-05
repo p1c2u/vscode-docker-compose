@@ -36,6 +36,10 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.2.2
+
+* Commands rename fix
+
 ### 0.2.1
 
 * List services error handing fix
