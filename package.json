@@ -43,137 +43,165 @@
         },
         "commands": [
             {
-                "command": "docker-compose.refreshExplorer",
-                "title": "Refresh",
+                "command": "docker-compose.explorer.refresh",
+                "title": "Refresh explorer",
                 "icon": {
                     "light": "resources/light/refresh.svg",
                     "dark": "resources/dark/refresh.svg"
-                }
+                },
+                "description": "Refresh Docker Compose explorer",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.upProject",
-                "title": "Up"
+                "command": "docker-compose.project.up",
+                "title": "Up",
+                "description": "Docker Compose project up",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.downProject",
-                "title": "Down"
+                "command": "docker-compose.project.down",
+                "title": "Down",
+                "description": "Docker Compose project down",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.shellService",
-                "title": "Shell"
+                "command": "docker-compose.service.shell",
+                "title": "Shell",
+                "description": "Docker Compose service shell",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.upService",
-                "title": "Up"
+                "command": "docker-compose.service.up",
+                "title": "Up",
+                "description": "Docker Compose service up",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.downService",
-                "title": "Down"
+                "command": "docker-compose.service.down",
+                "title": "Down",
+                "description": "Docker Compose service down",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.startService",
-                "title": "Start"
+                "command": "docker-compose.service.start",
+                "title": "Start",
+                "description": "Docker Compose service start",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.stopService",
-                "title": "Stop"
+                "command": "docker-compose.service.stop",
+                "title": "Stop",
+                "description": "Docker Compose service stop",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.restartService",
-                "title": "Restart"
+                "command": "docker-compose.service.restart",
+                "title": "Restart",
+                "description": "Docker Compose service restart",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.buildService",
-                "title": "Build"
+                "command": "docker-compose.service.build",
+                "title": "Build",
+                "description": "Docker Compose service build",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.killService",
-                "title": "Kill"
+                "command": "docker-compose.service.kill",
+                "title": "Kill",
+                "description": "Docker Compose service kill",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.attachContainer",
-                "title": "Attach"
+                "command": "docker-compose.container.attach",
+                "title": "Attach",
+                "description": "Docker Compose container attach",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.startContainer",
-                "title": "Start"
+                "command": "docker-compose.container.start",
+                "title": "Start",
+                "description": "Docker Compose container start",
+                "category": "Docker Compose"
             },
             {
-                "command": "docker-compose.killContainer",
-                "title": "Kill"
+                "command": "docker-compose.container.kill",
+                "title": "Kill",
+                "description": "Docker Compose container kill",
+                "category": "Docker Compose"
             }
         ],
         "menus": {
             "view/title": [
                 {
-                    "command": "docker-compose.refreshExplorer",
+                    "command": "docker-compose.explorer.refresh",
                     "when": "view == dockerCompose",
                     "group": "navigation"
                 }
             ],
             "view/item/context": [
                 {
-                    "command": "docker-compose.upProject",
+                    "command": "docker-compose.project.up",
                     "when": "view == dockerCompose && viewItem == docker-compose:project",
                     "group": "docker-compose:project@0"
                 },
                 {
-                    "command": "docker-compose.downProject",
+                    "command": "docker-compose.project.down",
                     "when": "view == dockerCompose && viewItem == docker-compose:project",
                     "group": "docker-compose:project@1"
                 },
                 {
-                    "command": "docker-compose.shellService",
+                    "command": "docker-compose.service.shell",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@1"
                 },
                 {
-                    "command": "docker-compose.upService",
+                    "command": "docker-compose.service.up",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@2"
                 },
                 {
-                    "command": "docker-compose.downService",
+                    "command": "docker-compose.service.down",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@8"
                 },
                 {
-                    "command": "docker-compose.startService",
+                    "command": "docker-compose.service.start",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@3"
                 },
                 {
-                    "command": "docker-compose.stopService",
+                    "command": "docker-compose.service.stop",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@4"
                 },
                 {
-                    "command": "docker-compose.restartService",
+                    "command": "docker-compose.service.restart",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@5"
                 },
                 {
-                    "command": "docker-compose.buildService",
+                    "command": "docker-compose.service.build",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@6"
                 },
                 {
-                    "command": "docker-compose.killService",
+                    "command": "docker-compose.service.kill",
                     "when": "view == dockerCompose && viewItem == docker-compose:service",
                     "group": "docker-compose:service@7"
                 },
                 {
-                    "command": "docker-compose.attachContainer",
+                    "command": "docker-compose.container.attach",
                     "when": "view == dockerCompose && viewItem == docker-compose:running-container",
                     "group": "docker-compose:container@0"
                 },
                 {
-                    "command": "docker-compose.startContainer",
+                    "command": "docker-compose.container.start",
                     "when": "view == dockerCompose && viewItem == docker-compose:exited-container",
                     "group": "docker-compose:container@0"
                 },
                 {
-                    "command": "docker-compose.killContainer",
+                    "command": "docker-compose.container.kill",
                     "when": "view == dockerCompose && viewItem == docker-compose:running-container",
                     "group": "docker-compose:container@1"
                 }
