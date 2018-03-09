@@ -1,14 +1,5 @@
-'use strict';
+import { ContainerState } from "../containers/enums";
 import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
-
-export enum ContainerState {
-    Paused = "Paused",
-    restarting = "Restarting",
-    Ghost = "Ghost",
-    Up = "Up",
-    Exit = "Exit",
-}
-
 
 export class Container {
 

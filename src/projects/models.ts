@@ -1,7 +1,8 @@
 'use strict';
 import { WorkspaceFolder } from "vscode";
-import { Container, ContainerState } from "../models/container";
-import { Service } from "../models/service";
+import { ContainerState } from "../containers/enums";
+import { Container } from "../containers/models";
+import { Service } from "../services/models";
 import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
 
 export class Project {

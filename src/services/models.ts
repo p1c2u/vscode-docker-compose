@@ -1,6 +1,6 @@
 'use strict';
-import { Container } from "../models/container";
-import { Project } from "../models/project";
+import { Container } from "../containers/models";
+import { Project } from "../projects/models";
 import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
 
 export class Service {

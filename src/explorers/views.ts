@@ -1,4 +1,3 @@
-'use strict';
 import { Command, Disposable, ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 
 export abstract class ExplorerNode extends Disposable {

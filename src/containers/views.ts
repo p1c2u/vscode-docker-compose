@@ -1,9 +1,9 @@
-'use strict';
 import * as path from 'path';
 import { Command, TreeItem, TreeItemCollapsibleState, ExtensionContext } from "vscode";
 import { ResourceType } from "../enums";
-import { Container, ContainerState } from "../models/container";
-import { ExplorerNode } from "../views/explorerNode";
+import { ContainerState } from "../containers/enums";
+import { Container } from "../containers/models";
+import { ExplorerNode } from "../explorers/views";
 
 export class ContainerNode extends ExplorerNode {
 

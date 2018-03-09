@@ -1,8 +1,7 @@
-'use strict';
 import { TreeItem, TreeItemCollapsibleState, ExtensionContext, window } from 'vscode';
 import { ResourceType } from "../enums";
-import { Project } from "../models/project";
-import { ExplorerNode } from '../views/explorerNode';
+import { Project } from "../projects/models";
+import { ExplorerNode } from '../explorers/views';
 
 export class MessageNode extends ExplorerNode {
 

@@ -1,10 +1,9 @@
-'use strict';
-import { TreeItem, TreeItemCollapsibleState, ExtensionContext, window } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, Uri, ExtensionContext } from 'vscode';
 import { ResourceType } from "../enums";
-import { Project } from "../models/project";
-import { ExplorerNode } from '../views/explorerNode';
-import { MessageNode } from '../views/messageNode';
-import { ServiceNode } from "../views/serviceNode";
+import { MessageNode } from "../messages/views";
+import { Project } from "../projects/models";
+import { ServiceNode } from "../services/views";
+import { ExplorerNode } from '../explorers/views';
 
 export class ProjectNode extends ExplorerNode {
 
@@ -43,4 +42,28 @@ export class ProjectNode extends ExplorerNode {
         return item;
     }
 
+}
+
+export class ProjectsNode extends ExplorerNode {
+
+    constructor(
+        context: ExtensionContext,
+        private readonly projects: Project[]
+    ) {
+        super(context);
+    }
+
+    async getChildren(): Promise<ExplorerNode[]> {
+        this.resetChildren();
+
+        this.children = this.projects
+            .map(project => new ProjectNode(this.context, project));
+        return this.children;
+    }
+
+    getTreeItem(): TreeItem {
+        const item = new TreeItem(`Projects`, TreeItemCollapsibleState.Expanded);
+        item.contextValue = ResourceType.Projects;
+        return item;
+    }
 }
