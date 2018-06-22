@@ -1,3 +1,8 @@
+## 0.2.3
+
+- Activity bar
+- Activation events fix
+
 ## 0.2.2
 
 - Commands rename fix
