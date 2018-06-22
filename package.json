@@ -7,7 +7,7 @@
     "publisher": "p1c2u",
     "license": "MIT",
     "engines": {
-        "vscode": "^1.23.0"
+        "vscode": "^1.13.0"
     },
     "categories": [
         "Other"
@@ -28,7 +28,23 @@
         "url": "https://github.com/p1c2u/vscode-docker-compose.git"
     },
     "activationEvents": [
-        "workspaceContains:**/docker-compose.yml"
+        "workspaceContains:**/docker-compose.yml",
+        "onCommand:docker-compose.explorer.refresh",
+        "onCommand:docker-compose.project.up",
+        "onCommand:docker-compose.project.down",
+        "onCommand:docker-compose.service.shell",
+        "onCommand:docker-compose.service.up",
+        "onCommand:docker-compose.service.down",
+        "onCommand:docker-compose.service.start",
+        "onCommand:docker-compose.service.stop",
+        "onCommand:docker-compose.service.restart",
+        "onCommand:docker-compose.service.build",
+        "onCommand:docker-compose.service.kill",
+        "onCommand:docker-compose.container.attach",
+        "onCommand:docker-compose.container.start",
+        "onCommand:docker-compose.container.kill",
+        "onView:dockerCompose",
+        "onDebugInitialConfigurations"
     ],
     "main": "./out/extension",
     "contributes": {

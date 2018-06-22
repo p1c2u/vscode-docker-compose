@@ -1,4 +1,4 @@
-import { TreeItem, TreeItemCollapsibleState, Uri, ExtensionContext } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, Uri, ExtensionContext, window } from 'vscode';
 import { ResourceType } from "../enums";
 import { MessageNode } from "../messages/views";
 import { Project } from "../projects/models";
@@ -21,13 +21,15 @@ export class ProjectNode extends ExplorerNode {
 
         try {
             this.project.refreshContainers();
-        } catch (error) {
+        } catch (err) {
+            window.showErrorMessage("Docker Compose Error: " + err.message);
             return [new MessageNode(this.context, 'Failed to retrieve project containers')];
         }
 
         try {
             services = this.project.getServices();
-        } catch (error) {
+        } catch (err) {
+            window.showErrorMessage("Docker Compose Error: " + err.message);
             return [new MessageNode(this.context, 'Failed to list project services')];
         }
 
