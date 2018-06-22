@@ -7,7 +7,7 @@
     "publisher": "p1c2u",
     "license": "MIT",
     "engines": {
-        "vscode": "^1.13.0"
+        "vscode": "^1.23.0"
     },
     "categories": [
         "Other"
@@ -33,11 +33,20 @@
     "main": "./out/extension",
     "contributes": {
         "views": {
-            "explorer": [
+            "dockerComposeView": [
                 {
                     "id": "dockerCompose",
-                    "name": "Docker Compose",
+                    "name": "Explorer",
                     "when": "config.docker-compose.showExplorer == true"
+                }
+            ]
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "dockerComposeView",
+                    "title": "Docker Compose",
+                    "icon": "images/compose.svg"
                 }
             ]
         },
