@@ -1,4 +1,5 @@
 import { CommandExecutor } from "./commandExecutor";
+import { ComposeFileNotFound, DockerComposeExecutorError } from "./exceptions";
 import { WorkspaceConfigurator } from "../configurators/workspaceConfigurator";
 
 export class DockerComposeCommandExecutor extends CommandExecutor {
@@ -80,6 +81,18 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
         let command = this.getBaseCommand();
         let composeCommand = `${command} kill ${serviceName}`
         return this.execSync(composeCommand);
+    }
+
+    public execSync(command: string) {
+        try {
+            return super.execSync(command);
+        }
+        catch (err) {
+            if (err.message.includes("No such file"))
+                throw new ComposeFileNotFound(err.output);
+            else
+                throw new DockerComposeExecutorError(err.output);
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState, Uri, ExtensionContext, window } from 'vscode';
 import { ResourceType } from "../enums";
+import { DockerComposeExecutorError, ComposeFileNotFound } from "../executors/exceptions";
 import { MessageNode } from "../messages/views";
 import { Project } from "../projects/models";
 import { ServiceNode } from "../services/views";
@@ -22,15 +23,29 @@ export class ProjectNode extends ExplorerNode {
         try {
             this.project.refreshContainers();
         } catch (err) {
-            window.showErrorMessage("Docker Compose Error: " + err.message);
-            return [new MessageNode(this.context, 'Failed to retrieve project containers')];
+            if (err instanceof ComposeFileNotFound) {
+                return [new MessageNode(this.context, 'No docker compose file(s)')];
+            } else if (err instanceof DockerComposeExecutorError) {
+                window.showErrorMessage("docker-compose", "Docker Compose Error: " + err.message);
+                return [new MessageNode(this.context, 'Failed to execute script docker-compose')];
+            } else {
+                window.showErrorMessage("docker-compose", "Docker Compose Error: " + err.message);
+                return [new MessageNode(this.context, 'unexpected error')];
+            }
         }
 
         try {
             services = this.project.getServices();
         } catch (err) {
-            window.showErrorMessage("Docker Compose Error: " + err.message);
-            return [new MessageNode(this.context, 'Failed to list project services')];
+            if (err instanceof ComposeFileNotFound) {
+                return [new MessageNode(this.context, 'No docker compose file(s)')];
+            } else if (err instanceof DockerComposeExecutorError) {
+                window.showErrorMessage("docker-compose", "Docker Compose Error: " + err.message);
+                return [new MessageNode(this.context, 'Failed to execute script docker-compose')];
+            } else {
+                window.showErrorMessage("docker-compose", "Docker Compose Error: " + err.message);
+                return [new MessageNode(this.context, 'unexpected error')];
+            }
         }
 
         this.children = services
