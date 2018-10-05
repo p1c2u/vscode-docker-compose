@@ -6,11 +6,11 @@ export class AppInsightsClient {
     private client;
 
     constructor(hash: string) {
-        this.client = appInsights.getClient(hash);
+        this.client = new appInsights.TelemetryClient(hash);
     }
 
     public sendEvent(eventName: string, properties?: { [key: string]: string; }): void {
-        this.client.trackEvent(eventName, properties);
+        this.client.trackEvent({name: eventName, properties: properties});
     }
 
 }
