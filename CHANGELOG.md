@@ -1,3 +1,9 @@
+## 0.3.0
+
+- Better executor exceptions handling
+- Refresh nodes on child process exit event
+- Container logs command
+
 ## 0.2.3
 
 - Activity bar
