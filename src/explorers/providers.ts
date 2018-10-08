@@ -1,5 +1,5 @@
 import { ChildProcess } from "child_process";
-import { TreeItem, TreeDataProvider, EventEmitter, Event, workspace, ExtensionContext } from "vscode";
+import { TreeItem, TreeDataProvider, EventEmitter, Event, workspace, window, ExtensionContext, Uri, TextDocument, Position } from "vscode";
 import { Project } from "../projects/models";
 import { ContainerNode } from "../containers/views";
 import { ExplorerNode } from "../explorers/views";
@@ -162,6 +162,18 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             node.container.attach();
         }
     
+        public async logsContainer(node:ContainerNode): Promise<void> {
+            var setting: Uri = Uri.parse("untitled:" + node.container.name + ".logs");
+            var content = node.container.logs();
+            workspace.openTextDocument(setting).then((doc: TextDocument) => {
+                window.showTextDocument(doc, 1, false).then(editor => {
+                    editor.edit(edit => {
+                        edit.insert(new Position(0, 0), content);
+                    });
+                });
+            });
+        }
+
         public async startContainer(node: ContainerNode): Promise<ChildProcess> {
             let child_process = node.container.start();
             child_process.on('close', this.getRefreshCallable(node));

@@ -97,6 +97,11 @@ export function activate(context: vscode.ExtensionContext) {
         telemetryClient.sendEvent("attachContainer");
     });
 
+    let logsContainer = vscode.commands.registerCommand("docker-compose.container.logs", (node: ContainerNode) => {
+        provider.logsContainer(node);
+        telemetryClient.sendEvent("logsContainer");
+    });
+
     let startContainer = vscode.commands.registerCommand("docker-compose.container.start", (node: ContainerNode) => {
         provider.startContainer(node);
         telemetryClient.sendEvent("startContainer");
@@ -125,6 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(buildService);
     context.subscriptions.push(killService);
     context.subscriptions.push(attachContainer);
+    context.subscriptions.push(logsContainer);
     context.subscriptions.push(startContainer);
     context.subscriptions.push(stopContainer);
     context.subscriptions.push(killContainer);
