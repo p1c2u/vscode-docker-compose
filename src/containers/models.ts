@@ -18,6 +18,11 @@ export class Container {
         this.executor.runInTerminal(command, true, this.name);
     }
 
+    public logs(): string {
+        let command = `docker logs ${this.name}`
+        return this.executor.execSync(command);
+    }
+
     public start(): ChildProcess {
         let command = `docker start ${this.name}`
         return this.executor.exec(command);

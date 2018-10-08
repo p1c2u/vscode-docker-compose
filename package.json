@@ -43,6 +43,7 @@
     "onCommand:docker-compose.service.build",
     "onCommand:docker-compose.service.kill",
     "onCommand:docker-compose.container.attach",
+    "onCommand:docker-compose.container.logs",
     "onCommand:docker-compose.container.start",
     "onCommand:docker-compose.container.stop",
     "onCommand:docker-compose.container.kill",
@@ -159,6 +160,12 @@
         "category": "Docker Compose"
       },
       {
+        "command": "docker-compose.container.logs",
+        "title": "Logs",
+        "description": "Docker Compose container logs",
+        "category": "Docker Compose"
+      },
+      {
         "command": "docker-compose.container.start",
         "title": "Start",
         "description": "Docker Compose container start",
@@ -250,6 +257,11 @@
           "command": "docker-compose.container.attach",
           "when": "view == dockerCompose && viewItem == docker-compose:running-container",
           "group": "docker-compose:container@0"
+        },
+        {
+          "command": "docker-compose.container.logs",
+          "when": "view == dockerCompose && viewItem == docker-compose:running-container",
+          "group": "docker-compose:container@1"
         },
         {
           "command": "docker-compose.container.start",
