@@ -1,3 +1,4 @@
+import { ChildProcess } from "child_process";
 import { TreeItem, TreeDataProvider, EventEmitter, Event, workspace, ExtensionContext } from "vscode";
 import { Project } from "../projects/models";
 import { ContainerNode } from "../containers/views";
@@ -15,12 +16,12 @@ export class AutoRefreshTreeDataProvider<T> {
         this.autoRefreshEnabled = true;
     }
 
-    private _onDidChangeAutoRefresh = new EventEmitter<void>();
+    protected _onDidChangeAutoRefresh = new EventEmitter<void>();
     public get onDidChangeAutoRefresh(): Event<void> {
         return this._onDidChangeAutoRefresh.event;
     }
 
-    private _onDidChangeTreeData = new EventEmitter<any>();
+    protected _onDidChangeTreeData = new EventEmitter<any>();
     public get onDidChangeTreeData(): Event<any> {
         return this._onDidChangeTreeData.event;
     }
@@ -69,6 +70,14 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             this._root = new ProjectsNode(this.context, projects);
         }
 
+        protected getRefreshCallable(node: ExplorerNode) {
+            let that = this;
+            async function refresh() {
+                await that.refresh(node);
+            }
+            return refresh;
+        }
+
         async getChildren(node?: ExplorerNode): Promise<ExplorerNode[]> {
             if (this._loading !== undefined) {
                 await this._loading;
@@ -83,56 +92,92 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             return node.getTreeItem();
         }
 
-        public async upProject(node: ProjectNode): Promise<void> {
-            node.project.up();
+        public async startProject(node: ProjectNode): Promise<ChildProcess> {
+            return node.project.start();
         }
     
-        public async downProject(node: ProjectNode): Promise<void> {
-            node.project.down();
+        public async stopProject(node: ProjectNode): Promise<ChildProcess> {
+            return node.project.stop();
+        }
+    
+        public async upProject(node: ProjectNode): Promise<ChildProcess> {
+            let child_process = node.project.up();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+    
+        public async downProject(node: ProjectNode): Promise<ChildProcess> {
+            let child_process = node.project.down();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
         public async shellService(node: ServiceNode): Promise<void> {
             node.service.shell();
         }
     
-        public async upService(node: ServiceNode): Promise<void> {
-            node.service.up();
+        public async upService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.up();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
-        public async downService(node: ServiceNode): Promise<void> {
-            node.service.down();
+        public async downService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.down();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
-        public async buildService(node: ServiceNode): Promise<void> {
-            node.service.build();
+        public async buildService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.build();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
-        public async startService(node: ServiceNode): Promise<void> {
-            node.service.start();
+        public async startService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.start();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
-        public async stopService(node: ServiceNode): Promise<void> {
-            node.service.stop();
+        public async stopService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.stop();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
-        public async restartService(node: ServiceNode): Promise<void> {
-            node.service.restart();
+        public async restartService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.restart();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
-        public async killService(node: ServiceNode): Promise<void> {
-            node.service.kill();
+        public async killService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.kill();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
         public async attachContainer(node: ContainerNode): Promise<void> {
             node.container.attach();
         }
     
-        public async startContainer(node: ContainerNode): Promise<void> {
-            node.container.start();
+        public async startContainer(node: ContainerNode): Promise<ChildProcess> {
+            let child_process = node.container.start();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
-        public async killContainer(node: ContainerNode): Promise<void> {
-            node.container.kill();
+        public async stopContainer(node: ContainerNode): Promise<ChildProcess> {
+            let child_process = node.container.stop();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+    
+        public async killContainer(node: ContainerNode): Promise<ChildProcess> {
+            let child_process = node.container.kill();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
         }
     
     }

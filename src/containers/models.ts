@@ -1,3 +1,4 @@
+import { ChildProcess } from "child_process";
 import { ContainerState } from "../containers/enums";
 import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
 
@@ -17,14 +18,19 @@ export class Container {
         this.executor.runInTerminal(command, true, this.name);
     }
 
-    public start(): void {
+    public start(): ChildProcess {
         let command = `docker start ${this.name}`
-        this.executor.exec(command);
+        return this.executor.exec(command);
     }
 
-    public kill(): void {
+    public stop(): ChildProcess {
+        let command = `docker stop ${this.name}`
+        return this.executor.exec(command);
+    }
+
+    public kill(): ChildProcess {
         let command = `docker kill ${this.name}`
-        this.executor.exec(command);
+        return this.executor.exec(command);
     }
 
 }

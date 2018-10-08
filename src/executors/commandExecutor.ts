@@ -1,5 +1,5 @@
 "use strict";
-import { exec, execSync } from "child_process";
+import { exec, execSync, ChildProcess } from "child_process";
 import * as vscode from "vscode";
 
 export class CommandExecutor {
@@ -27,7 +27,7 @@ export class CommandExecutor {
         this.terminals[terminal].show();
     }
 
-    public exec(command: string) {
+    public exec(command: string): ChildProcess {
         return exec(command, {env: this._env, cwd: this._cwd,  encoding: "utf8" });
     }
 

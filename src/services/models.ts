@@ -1,4 +1,5 @@
 'use strict';
+import { ChildProcess } from "child_process";
 import { Container } from "../containers/models";
 import { Project } from "../projects/models";
 import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
@@ -25,32 +26,32 @@ export class Service {
         this.executor.shell(this.name);
     }
 
-    public up(): void {
-        this.executor.up(this.name);
+    public up(): ChildProcess {
+        return this.executor.up(this.name);
     }
 
-    public down(): void {
-        this.executor.down(this.name);
+    public down(): ChildProcess {
+        return this.executor.down(this.name);
     }
 
-    public start(): void {
-        this.executor.start(this.name);
+    public start(): ChildProcess {
+        return this.executor.start(this.name);
     }
 
-    public stop(): void {
-        this.executor.stop(this.name);
+    public stop(): ChildProcess {
+        return this.executor.stop(this.name);
     }
 
-    public restart(): void {
-        this.executor.restart(this.name);
+    public restart(): ChildProcess {
+        return this.executor.restart(this.name);
     }
 
-    public build(): void {
-        this.executor.build(this.name);
+    public build(): ChildProcess {
+        return this.executor.build(this.name);
     }
 
-    public kill(): void {
-        this.executor.kill(this.name);
+    public kill(): ChildProcess {
+        return this.executor.kill(this.name);
     }
 
 }

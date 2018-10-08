@@ -30,6 +30,8 @@
   "activationEvents": [
     "workspaceContains:**/docker-compose.yml",
     "onCommand:docker-compose.explorer.refresh",
+    "onCommand:docker-compose.project.start",
+    "onCommand:docker-compose.project.stop",
     "onCommand:docker-compose.project.up",
     "onCommand:docker-compose.project.down",
     "onCommand:docker-compose.service.shell",
@@ -42,6 +44,7 @@
     "onCommand:docker-compose.service.kill",
     "onCommand:docker-compose.container.attach",
     "onCommand:docker-compose.container.start",
+    "onCommand:docker-compose.container.stop",
     "onCommand:docker-compose.container.kill",
     "onView:dockerCompose",
     "onDebugInitialConfigurations"
@@ -75,6 +78,18 @@
           "dark": "resources/dark/refresh.svg"
         },
         "description": "Refresh Docker Compose explorer",
+        "category": "Docker Compose"
+      },
+      {
+        "command": "docker-compose.project.start",
+        "title": "Start",
+        "description": "Docker Compose project start",
+        "category": "Docker Compose"
+      },
+      {
+        "command": "docker-compose.project.stop",
+        "title": "Stop",
+        "description": "Docker Compose project stop",
         "category": "Docker Compose"
       },
       {
@@ -150,6 +165,12 @@
         "category": "Docker Compose"
       },
       {
+        "command": "docker-compose.container.stop",
+        "title": "Stop",
+        "description": "Docker Compose container stop",
+        "category": "Docker Compose"
+      },
+      {
         "command": "docker-compose.container.kill",
         "title": "Kill",
         "description": "Docker Compose container kill",
@@ -166,14 +187,24 @@
       ],
       "view/item/context": [
         {
-          "command": "docker-compose.project.up",
+          "command": "docker-compose.project.start",
           "when": "view == dockerCompose && viewItem == docker-compose:project",
           "group": "docker-compose:project@0"
         },
         {
-          "command": "docker-compose.project.down",
+          "command": "docker-compose.project.stop",
           "when": "view == dockerCompose && viewItem == docker-compose:project",
           "group": "docker-compose:project@1"
+        },
+        {
+          "command": "docker-compose.project.up",
+          "when": "view == dockerCompose && viewItem == docker-compose:project",
+          "group": "docker-compose:project@2"
+        },
+        {
+          "command": "docker-compose.project.down",
+          "when": "view == dockerCompose && viewItem == docker-compose:project",
+          "group": "docker-compose:project@3"
         },
         {
           "command": "docker-compose.service.shell",
@@ -226,9 +257,14 @@
           "group": "docker-compose:container@0"
         },
         {
-          "command": "docker-compose.container.kill",
+          "command": "docker-compose.container.stop",
           "when": "view == dockerCompose && viewItem == docker-compose:running-container",
           "group": "docker-compose:container@1"
+        },
+        {
+          "command": "docker-compose.container.kill",
+          "when": "view == dockerCompose && viewItem == docker-compose:running-container",
+          "group": "docker-compose:container@2"
         }
       ]
     },
@@ -246,7 +282,7 @@
         },
         "docker-compose.autoRefreshInterval": {
           "type": "integer",
-          "default": 10000,
+          "default": 90000,
           "description": "Docker Compose auto refresh interval."
         },
         "docker-compose.showExplorer": {

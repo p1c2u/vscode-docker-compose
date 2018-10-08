@@ -37,6 +37,16 @@ export function activate(context: vscode.ExtensionContext) {
         telemetryClient.sendEvent("shellService");
     });
 
+    let startProject = vscode.commands.registerCommand("docker-compose.project.start", (node: ProjectNode) => {
+        provider.startProject(node);
+        telemetryClient.sendEvent("startProject");
+    });
+
+    let stopProject = vscode.commands.registerCommand("docker-compose.project.stop", (node: ProjectNode) => {
+        provider.stopProject(node);
+        telemetryClient.sendEvent("stopProject");
+    });
+
     let upProject = vscode.commands.registerCommand("docker-compose.project.up", (node: ProjectNode) => {
         provider.upProject(node);
         telemetryClient.sendEvent("upProject");
@@ -92,6 +102,11 @@ export function activate(context: vscode.ExtensionContext) {
         telemetryClient.sendEvent("startContainer");
     });
 
+    let stopContainer = vscode.commands.registerCommand("docker-compose.container.stop", (node: ContainerNode) => {
+        provider.stopContainer(node);
+        telemetryClient.sendEvent("stopContainer");
+    });
+
     let killContainer = vscode.commands.registerCommand("docker-compose.container.kill", (node: ContainerNode) => {
         provider.killContainer(node);
         telemetryClient.sendEvent("killContainer");
@@ -99,6 +114,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(upProject);
     context.subscriptions.push(downProject);
+    context.subscriptions.push(startProject);
+    context.subscriptions.push(stopProject);
     context.subscriptions.push(shellService);
     context.subscriptions.push(upService);
     context.subscriptions.push(downService);
@@ -109,6 +126,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(killService);
     context.subscriptions.push(attachContainer);
     context.subscriptions.push(startContainer);
+    context.subscriptions.push(stopContainer);
     context.subscriptions.push(killContainer);
 }
 

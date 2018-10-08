@@ -1,4 +1,5 @@
 'use strict';
+import { ChildProcess } from "child_process";
 import { WorkspaceFolder } from "vscode";
 import { ContainerState } from "../containers/enums";
 import { Container } from "../containers/models";
@@ -72,12 +73,20 @@ export class Project {
         });
     }
 
-    public up(): void {
-        this.executor.up();
+    public start(): ChildProcess {
+        return this.executor.start();
     }
 
-    public down(): void {
-        this.executor.down();
+    public stop(): ChildProcess {
+        return this.executor.stop();
+    }
+
+    public up(): ChildProcess {
+        return this.executor.up();
+    }
+
+    public down(): ChildProcess {
+        return this.executor.down();
     }
 
 }
