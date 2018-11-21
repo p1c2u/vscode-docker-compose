@@ -36,6 +36,10 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.3.1
+
+* Find docker compose ps separator fix
+
 ### 0.3.0
 
 * Better executor exceptions handling

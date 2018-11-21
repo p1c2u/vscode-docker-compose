@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Find docker compose ps separator fix
+
 ## 0.3.0
 
 - Better executor exceptions handling
