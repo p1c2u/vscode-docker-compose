@@ -57,9 +57,10 @@ export class Project {
         // find separator line
         let sepLineIdx = null;
         for (let [idx, lineString] of linesString.entries()) {
-            if (lineString.startsWith("---"))
+            if (lineString.startsWith("---")) {
                 sepLineIdx = idx;
                 break;
+            }
         }
         // process containers lines
         if (sepLineIdx === null)
