@@ -36,6 +36,11 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.3.2
+
+* Containers loop fix
+* New service icons
+
 ### 0.3.1
 
 * Find docker compose ps separator fix
