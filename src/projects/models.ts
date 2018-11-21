@@ -54,7 +54,17 @@ export class Project {
     private _getContainers(): Container[] {
         let resultString = this.executor.getPs();
         let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
-        let containersString  = linesString.slice(2);
+        // find separator line
+        let sepLineIdx = null;
+        for (let [idx, lineString] of linesString.entries()) {
+            if (lineString.startsWith("---"))
+                sepLineIdx = idx;
+                break;
+        }
+        // process containers lines
+        if (sepLineIdx === null)
+            return [];
+        let containersString = linesString.slice(sepLineIdx+1);
         let executor = this.executor;
         return containersString.map(function (containerString, index, array) {
             const items = containerString.split(/\s{2,}/g).filter((item) => item);
