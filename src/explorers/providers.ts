@@ -1,4 +1,5 @@
 import { ChildProcess } from "child_process";
+import * as vscode from 'vscode';
 import { TreeItem, TreeDataProvider, EventEmitter, Event, workspace, window, ExtensionContext, Uri, TextDocument, Position } from "vscode";
 import { Project } from "../projects/models";
 import { ContainerNode } from "../containers/views";
@@ -62,11 +63,14 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             private projectNames: string[]
         ) {
             super(context);
-            let projects = workspace.workspaceFolders.map((folder) => {
-                let name = projectNames[folder.index] || folder.name.replace(/[^\w\s]/gi, '');
-                let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.path);
-                return new Project(name, executor);
-            });
+            let projects = [];
+            if (vscode.workspace && vscode.workspace.workspaceFolders) {
+                projects = vscode.workspace.workspaceFolders.map((folder) => {
+                    let name = projectNames[folder.index] || folder.name.replace(/[^\w\s]/gi, '');
+                    let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.path);
+                    return new Project(name, executor);
+                });
+            }
             this._root = new ProjectsNode(this.context, projects);
         }
 
@@ -165,7 +169,7 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
         public async logsContainer(node:ContainerNode): Promise<void> {
             var setting: Uri = Uri.parse("untitled:" + node.container.name + ".logs");
             var content = node.container.logs();
-            workspace.openTextDocument(setting).then((doc: TextDocument) => {
+            vscode.workspace.openTextDocument(setting).then((doc: TextDocument) => {
                 window.showTextDocument(doc, 1, false).then(editor => {
                     editor.edit(edit => {
                         edit.insert(new Position(0, 0), content);

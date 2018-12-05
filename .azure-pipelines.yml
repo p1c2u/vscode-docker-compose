@@ -7,12 +7,15 @@ jobs:
   - task: NodeTool@0
     displayName: 'Use Node 8.x'
     inputs:
-      versionSpec: 8.x
+      versionSpec: 8.11.4
 
   - task: Npm@1
     displayName: 'Install dependencies'
     inputs:
       verbose: false
+
+  - script: 'node node_modules/typescript/bin/tsc --version'
+    displayName: 'Prepare sources'
 
   - task: Npm@1
     displayName: 'Compile sources'
@@ -32,12 +35,15 @@ jobs:
   - task: NodeTool@0
     displayName: 'Use Node 8.x'
     inputs:
-      versionSpec: 8.x
+      versionSpec: 8.11.4
 
   - task: Npm@1
     displayName: 'Install dependencies'
     inputs:
       verbose: false
+
+  - script: 'node node_modules/typescript/bin/tsc --version'
+    displayName: 'Prepare sources'
 
   - task: Npm@1
     displayName: 'Compile sources'
@@ -57,12 +63,15 @@ jobs:
   - task: NodeTool@0
     displayName: 'Use Node 8.x'
     inputs:
-      versionSpec: 8.x
+      versionSpec: 8.11.4
 
   - task: Npm@1
     displayName: 'Install dependencies'
     inputs:
       verbose: false
+
+  - script: 'node node_modules/typescript/bin/tsc --version'
+    displayName: 'Prepare sources'
 
   - task: Npm@1
     displayName: 'Compile sources'
