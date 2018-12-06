@@ -1,0 +1,9 @@
+steps:
+- task: Npm@1
+  displayName: 'Source: Install dependencies'
+
+- task: Npm@1
+  displayName: 'Source: Build'
+  inputs:
+    command: custom
+    customCommand: run build

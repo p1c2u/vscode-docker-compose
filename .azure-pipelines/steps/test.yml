@@ -1,0 +1,3 @@
+steps:
+  - script: 'node node_modules/vscode/bin/test'
+    displayName: 'Test: Run'

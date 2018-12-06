@@ -1,6 +1,5 @@
 'use strict';
 import { ChildProcess } from "child_process";
-import { WorkspaceFolder } from "vscode";
 import { ContainerState } from "../containers/enums";
 import { Container } from "../containers/models";
 import { Service } from "../services/models";

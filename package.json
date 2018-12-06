@@ -7,7 +7,7 @@
   "publisher": "p1c2u",
   "license": "MIT",
   "engines": {
-    "vscode": "^1.13.0"
+    "vscode": "^1.25.0"
   },
   "categories": [
     "Other"
@@ -326,15 +326,15 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run build && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.6",
+    "typescript": "^3.2.1",
+    "vscode": "^1.1.18",
     "@types/node": "^7.0.43",
     "@types/mocha": "^2.2.42"
   },
