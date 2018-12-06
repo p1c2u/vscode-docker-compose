@@ -6,6 +6,6 @@ steps:
   displayName: 'Start xvfb'
 
 - script: 'node node_modules/vscode/bin/test'
-  displayName: 'Run tests'
+  displayName: 'Test: Run'
   env:
     DISPLAY: :10
