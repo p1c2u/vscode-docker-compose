@@ -3,9 +3,9 @@ import { Command, TreeItem, TreeItemCollapsibleState, ExtensionContext } from "v
 import { ResourceType } from "../enums";
 import { Service } from "../services/models";
 import { ContainerNode } from "../containers/views";
-import { ExplorerNode } from "../explorers/views";
+import { ComposeNode } from "../compose/views";
 
-export class ServiceNode extends ExplorerNode {
+export class ServiceNode extends ComposeNode {
 
     // iconPath = {
 	// 	light: path.join(__filename, '..', '..', '..', 'resources', 'light'),
@@ -19,7 +19,7 @@ export class ServiceNode extends ExplorerNode {
 		super(context);
     }
 
-    async getChildren(): Promise<ExplorerNode[]> {
+    async getChildren(): Promise<ComposeNode[]> {
         this.resetChildren();
 
         const projectContainers = this.service.project.getContainers();

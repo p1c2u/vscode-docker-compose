@@ -1,11 +1,10 @@
-import * as path from 'path';
-import { Command, TreeItem, TreeItemCollapsibleState, ExtensionContext } from "vscode";
+import { TreeItem, TreeItemCollapsibleState, ExtensionContext } from "vscode";
 import { ResourceType } from "../enums";
 import { ContainerState } from "../containers/enums";
 import { Container } from "../containers/models";
-import { ExplorerNode } from "../explorers/views";
+import { ComposeNode } from "../compose/views";
 
-export class ContainerNode extends ExplorerNode {
+export class ContainerNode extends ComposeNode {
 
     // iconPath = {
 	// 	light: path.join(__filename, '..', '..', '..', 'resources', 'light'),
@@ -19,7 +18,7 @@ export class ContainerNode extends ExplorerNode {
 		super(context);
     }
 
-    async getChildren(): Promise<ExplorerNode[]> {
+    async getChildren(): Promise<ComposeNode[]> {
         return [];
     }
 
