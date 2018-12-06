@@ -36,6 +36,10 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.3.3
+
+* Windows folders path fix
+
 ### 0.3.2
 
 * Containers loop fix

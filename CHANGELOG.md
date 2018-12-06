@@ -1,3 +1,6 @@
+## 0.3.3
+- Windows folders path fix
+
 ## 0.3.2
 
 - Containers loop fix
