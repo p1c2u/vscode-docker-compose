@@ -1,6 +1,6 @@
 import { ChildProcess } from "child_process";
 import { CommandExecutor } from "./commandExecutor";
-import { ComposeFileNotFound, DockerComposeExecutorError } from "./exceptions";
+import { ComposeFileNotFound, DockerComposeCommandNotFound, DockerComposeExecutorError } from "./exceptions";
 import { WorkspaceConfigurator } from "../configurators/workspaceConfigurator";
 
 export class DockerComposeCommandExecutor extends CommandExecutor {
@@ -90,9 +90,11 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
         }
         catch (err) {
             if (err.message.includes("No such file"))
-                throw new ComposeFileNotFound(err.output);
+                throw new ComposeFileNotFound(err.message, err.output);
+            else if (err.message.includes("'docker-compose' is not recognized"))
+                throw new DockerComposeCommandNotFound(err.message, err.output);
             else
-                throw new DockerComposeExecutorError(err.output);
+                throw new DockerComposeExecutorError(err.message, err.output);
         }
     }
 

@@ -67,7 +67,7 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             if (vscode.workspace && vscode.workspace.workspaceFolders) {
                 projects = vscode.workspace.workspaceFolders.map((folder) => {
                     let name = projectNames[folder.index] || folder.name.replace(/[^\w\s]/gi, '');
-                    let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.path);
+                    let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.fsPath);
                     return new Project(name, executor);
                 });
             }
@@ -82,14 +82,20 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             return refresh;
         }
 
-        async getChildren(node?: ExplorerNode): Promise<ExplorerNode[]> {
+        async getChildren(node?:ExplorerNode): Promise<ExplorerNode[]> {
             if (this._loading !== undefined) {
                 await this._loading;
                 this._loading = undefined;
             }
         
-            if (node === undefined) return this._root.getChildren();
-            return node.getChildren();
+            if (node === undefined) node = this._root;
+
+            try {
+                return await node.getChildren();
+            } catch (err) {
+                window.showErrorMessage("Docker Compose Error: " + err.message);
+                return node.handleError(err);
+            }
         }
     
         async getTreeItem(node: ExplorerNode): Promise<TreeItem> {

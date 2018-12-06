@@ -1,4 +1,4 @@
-import { Command, Disposable, ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { Command, Disposable, ExtensionContext, TreeItem } from 'vscode';
 
 export abstract class ExplorerNode extends Disposable {
 
@@ -22,6 +22,7 @@ export abstract class ExplorerNode extends Disposable {
 
     abstract getChildren(): ExplorerNode[] | Promise<ExplorerNode[]>;
     abstract getTreeItem(): TreeItem | Promise<TreeItem>;
+    abstract handleError(err: Error): ExplorerNode[] | Promise<ExplorerNode[]>;
 
     getCommand(): Command | undefined {
         return undefined;
