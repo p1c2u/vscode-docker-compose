@@ -5,11 +5,12 @@ import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandE
 export class Container {
 
     constructor(
+        private readonly executor: DockerComposeCommandExecutor,
         public readonly name: string,
         public readonly command: string,
         public readonly state: ContainerState,
         public readonly ports: string[],
-        private readonly executor: DockerComposeCommandExecutor
+        public readonly healthy: boolean = false
     ) {
     }
 

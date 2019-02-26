@@ -25,19 +25,21 @@ export class ContainerNode extends ComposeNode {
     async getTreeItem(): Promise<TreeItem> {
         const item = new TreeItem(this.container.name, TreeItemCollapsibleState.None);
 
+        item.contextValue = ResourceType.ExitedContainer;
+        var iconPath = this.context.asAbsolutePath('resources/service-exit.png');
+
         if (this.container.state == ContainerState.Up) {
             item.contextValue = ResourceType.RunningContainer;
-            item.iconPath = {
-                dark: this.context.asAbsolutePath('resources/service-up.png'),
-                light: this.context.asAbsolutePath('resources/service-up.png')
-            };
-        } else {
-            item.contextValue = ResourceType.ExitedContainer;
-            item.iconPath = {
-                dark: this.context.asAbsolutePath('resources/service-exit.png'),
-                light: this.context.asAbsolutePath('resources/service-exit.png')
-            };
+
+            var iconPath = this.context.asAbsolutePath('resources/service-up-unhealthy.png');
+            if (this.container.healthy)
+                var iconPath = this.context.asAbsolutePath('resources/service-up-healthy.png');
         }
+
+        item.iconPath = {
+            dark: iconPath,
+            light: iconPath
+        };
 
         return item;
     }
