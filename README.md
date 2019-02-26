@@ -36,6 +36,10 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.3.4
+
+* Container healthy icon
+
 ### 0.3.3
 
 * Windows folders path fix

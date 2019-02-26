@@ -1,3 +1,6 @@
+## 0.3.4
+- Container healthy icon
+
 ## 0.3.3
 - Windows folders path fix
 
