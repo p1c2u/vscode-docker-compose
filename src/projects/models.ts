@@ -71,8 +71,9 @@ export class Project {
             const name = items[0];
             const command = items[1];
             const state = items[2].startsWith('Up') ? ContainerState.Up : ContainerState.Exit;
+            const healthy = items[2].includes('(healthy)') ? true : items[2].includes('(unhealthy)') ? false : null;
             const ports = items.length == 4 ? items[3].split(', ') : [];
-            return new Container(name, command, state, ports, executor); 
+            return new Container(executor, name, command, state, ports, healthy);
         });
     }
 
