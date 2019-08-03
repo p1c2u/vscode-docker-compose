@@ -10,7 +10,7 @@ export class CommandExecutor {
 
     constructor(cwd: string = null, env: object = {}) {
         this._cwd = cwd;
-        this._env = env;
+        this._env = {...process.env, ...env};
 
         if ('onDidCloseTerminal' in <any>vscode.window) {
             (<any>vscode.window).onDidCloseTerminal((terminal) => {
