@@ -6,7 +6,8 @@ import { ContainerNode } from "../containers/views";
 import { ExplorerNode } from "../explorers/views";
 import { ProjectNode, ProjectsNode } from "../projects/views";
 import { ServiceNode } from "../services/views";
-import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
+import { DockerExecutor } from "../executors/dockerExecutor";
+import { DockerComposeExecutor } from "../executors/dockerComposeExecutor";
 
 export class AutoRefreshTreeDataProvider<T> {
 
@@ -68,8 +69,9 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
                 projects = vscode.workspace.workspaceFolders.map((folder) => {
                     // project name from mapping or use workspace dir name
                     let name = projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');
-                    let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.fsPath);
-                    return new Project(name, executor);
+                    let dockerExecutor = new DockerExecutor(shell, folder.uri.fsPath);
+                    let dockerComposeExecutor = new DockerComposeExecutor(name, files, shell, folder.uri.fsPath);
+                    return new Project(name, dockerExecutor, dockerComposeExecutor);
                 });
             }
             this._root = new ProjectsNode(this.context, projects);

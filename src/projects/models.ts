@@ -3,7 +3,8 @@ import { ChildProcess } from "child_process";
 import { ContainerState } from "../containers/enums";
 import { Container } from "../containers/models";
 import { Service } from "../services/models";
-import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
+import { DockerExecutor } from "../executors/dockerExecutor";
+import { DockerComposeExecutor } from "../executors/dockerComposeExecutor";
 
 export class Project {
 
@@ -12,7 +13,8 @@ export class Project {
 
     constructor(
         public readonly name: string,
-        private readonly executor: DockerComposeCommandExecutor
+        private readonly dockerExecutor: DockerExecutor,
+        private readonly dockerComposeExecutor: DockerComposeExecutor
     ) {
         this._services = undefined;
         this._containers = undefined;
@@ -30,10 +32,10 @@ export class Project {
     }
 
     private _getServices(): Service[] {
-        let servicesString = this.executor.getConnfigServices();
+        let servicesString = this.dockerComposeExecutor.getConnfigServices();
         let linesString = servicesString.split(/[\r\n]+/g).filter((item) => item)
         let project = this;
-        let executor = this.executor;
+        let executor = this.dockerComposeExecutor;
         return linesString.map(function (serviceString, index, array) {
             return new Service(project, serviceString, executor);
         });
@@ -51,7 +53,7 @@ export class Project {
     }
 
     private _getContainers(): Container[] {
-        let resultString = this.executor.getPs();
+        let resultString = this.dockerComposeExecutor.getPs();
         let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
         // find separator line
         let sepLineIdx = null;
@@ -65,7 +67,7 @@ export class Project {
         if (sepLineIdx === null)
             return [];
         let containersString = linesString.slice(sepLineIdx+1);
-        let executor = this.executor;
+        let executor = this.dockerExecutor;
         return containersString.map(function (containerString, index, array) {
             const items = containerString.split(/\s{2,}/g).filter((item) => item);
             const name = items[0];
@@ -77,6 +79,29 @@ export class Project {
         });
     }
 
+    public getContainerServiceName(name: string) {
+        let resultString = this.dockerExecutor.getPs(this.name, name);
+        let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
+        return linesString[0];
+    }
+
+    public getServiceContainers(serviceName: string): Container[] {
+        const containers = this.getContainers();
+
+        let projectPattern = this.name + '_'
+        let servicePattern = projectPattern + serviceName + '_';
+        return containers.filter((container) => {
+            // standard container name
+            if (container.name.startsWith(projectPattern)) {
+                return container.name.includes(servicePattern);
+            // custom container name
+            } else {
+                let name = this.getContainerServiceName(container.name);
+                return name == serviceName;
+            }
+        });
+    }
+
     public filterServiceContainers(serviceName: string, containers: Container[]): Container[] {
         let pattern = this.name + '_' + serviceName + '_';
         return containers.filter((container) => {
@@ -85,19 +110,19 @@ export class Project {
     }
 
     public start(): ChildProcess {
-        return this.executor.start();
+        return this.dockerComposeExecutor.start();
     }
 
     public stop(): ChildProcess {
-        return this.executor.stop();
+        return this.dockerComposeExecutor.stop();
     }
 
     public up(): ChildProcess {
-        return this.executor.up();
+        return this.dockerComposeExecutor.up();
     }
 
     public down(): ChildProcess {
-        return this.executor.down();
+        return this.dockerComposeExecutor.down();
     }
 
 }

@@ -3,7 +3,7 @@ import { CommandExecutor } from "./commandExecutor";
 import { ComposeFileNotFound, DockerComposeCommandNotFound, DockerComposeExecutorError } from "./exceptions";
 import { WorkspaceConfigurator } from "../configurators/workspaceConfigurator";
 
-export class DockerComposeCommandExecutor extends CommandExecutor {
+export class DockerComposeExecutor extends CommandExecutor {
 
     private _files: string[];
     private _shell: string;
@@ -14,7 +14,7 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
         this._shell = shell;
     }
 
-    private getBaseCommand(): string {
+    getBaseCommand(): string {
         return this._files.reduce((myString, files) => myString + ' -f ' + files, 'docker-compose');
     }
 
@@ -23,70 +23,60 @@ export class DockerComposeCommandExecutor extends CommandExecutor {
     }
 
     public getConnfigServices(): string {
-        let command = this.getBaseCommand();
-        let configServicesCommand = `${command} config --services`;
-        return this.execSync(configServicesCommand);
+        let configServicesCommand = `config --services`;
+        return this.executeSync(configServicesCommand);
     }
 
     public getPs(): string {
-        let command = this.getBaseCommand();
-        let composeCommand = `${command} ps`;
-        return this.execSync(composeCommand);
+        let composeCommand = `ps`;
+        return this.executeSync(composeCommand);
     }
 
     public shell(serviceName: string): void {
-        let command = this.getBaseCommand();
         let shellCommand = this.getShellCommand();
-        let composeCommand = `${command} exec ${serviceName} ${shellCommand}`
+        let composeCommand = `exec ${serviceName} ${shellCommand}`
         let terminalName = `${serviceName} shell`
         this.runInTerminal(composeCommand, true, terminalName);
     }
 
     public up(serviceName?: string): ChildProcess {
-        let command = this.getBaseCommand();
-        let composeCommand = serviceName === undefined ? `${command} up --no-recreate` : `${command} up --no-recreate ${serviceName}`;
-        return this.exec(composeCommand);
+        let composeCommand = serviceName === undefined ? `up --no-recreate` : `up --no-recreate ${serviceName}`;
+        return this.execute(composeCommand);
     }
 
     public down(serviceName?: string): ChildProcess {
-        let command = this.getBaseCommand();
-        let composeCommand = serviceName === undefined ? `${command} down` : `${command} down ${serviceName}`;
-        return this.exec(composeCommand);
+        let composeCommand = serviceName === undefined ? `down` : `down ${serviceName}`;
+        return this.execute(composeCommand);
     }
 
     public start(serviceName?: string): ChildProcess {
-        let command = this.getBaseCommand();
-        let composeCommand = serviceName === undefined ? `${command} start` : `${command} start ${serviceName}`
-        return this.exec(composeCommand);
+        let composeCommand = serviceName === undefined ? `start` : `start ${serviceName}`
+        return this.execute(composeCommand);
     }
 
     public stop(serviceName?: string): ChildProcess {
-        let command = this.getBaseCommand();
-        let composeCommand = serviceName === undefined ? `${command} stop` : `${command} stop ${serviceName}`
-        return this.exec(composeCommand);
+        let composeCommand = serviceName === undefined ? `stop` : `stop ${serviceName}`
+        return this.execute(composeCommand);
     }
 
     public restart(serviceName: string): ChildProcess {
-        let command = this.getBaseCommand();
-        let composeCommand = `${command} restart ${serviceName}`
-        return this.exec(composeCommand);
+        let composeCommand = `restart ${serviceName}`
+        return this.execute(composeCommand);
     }
 
     public build(serviceName: string): ChildProcess {
-        let command = this.getBaseCommand();
-        let composeCommand = `${command} build --no-cache ${serviceName}`
-        return this.exec(composeCommand);
+        let composeCommand = `build --no-cache ${serviceName}`
+        return this.execute(composeCommand);
     }
 
     public kill(serviceName: string): ChildProcess {
-        let command = this.getBaseCommand();
-        let composeCommand = `${command} kill ${serviceName}`
-        return this.exec(composeCommand);
+        let composeCommand = `kill ${serviceName}`
+        return this.execute(composeCommand);
     }
 
-    public execSync(command: string) {
+    public executeSync(composeCommand: string) {
         try {
-            return super.execSync(command);
+            return super.executeSync(composeCommand);
         }
         catch (err) {
             if (err.message.includes("No such file"))

@@ -2,14 +2,14 @@
 import { ChildProcess } from "child_process";
 import { Container } from "../containers/models";
 import { Project } from "../projects/models";
-import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
+import { DockerComposeExecutor } from "../executors/dockerComposeExecutor";
 
 export class Service {
 
     constructor(
         public project: Project,
         public readonly name: string,
-        private executor: DockerComposeCommandExecutor
+        private executor: DockerComposeExecutor
     ) {
     }
 
