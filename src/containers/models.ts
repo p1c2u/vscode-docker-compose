@@ -1,11 +1,11 @@
 import { ChildProcess } from "child_process";
 import { ContainerState } from "../containers/enums";
-import { DockerComposeCommandExecutor } from "../executors/dockerComposeCommandExecutor";
+import { DockerExecutor } from "../executors/dockerExecutor";
 
 export class Container {
 
     constructor(
-        private readonly executor: DockerComposeCommandExecutor,
+        private readonly executor: DockerExecutor,
         public readonly name: string,
         public readonly command: string,
         public readonly state: ContainerState,
@@ -15,28 +15,23 @@ export class Container {
     }
 
     public attach(): void {
-        let command = `docker attach ${this.name}`
-        this.executor.runInTerminal(command, true, this.name);
+        this.executor.attach(this.name);
     }
 
     public logs(): string {
-        let command = `docker logs ${this.name}`
-        return this.executor.execSync(command);
+        return this.executor.logs(this.name);
     }
 
     public start(): ChildProcess {
-        let command = `docker start ${this.name}`
-        return this.executor.exec(command);
+        return this.executor.start(this.name);
     }
 
     public stop(): ChildProcess {
-        let command = `docker stop ${this.name}`
-        return this.executor.exec(command);
+        return this.executor.stop(this.name);
     }
 
     public kill(): ChildProcess {
-        let command = `docker kill ${this.name}`
-        return this.executor.exec(command);
+        return this.executor.kill(this.name);
     }
 
 }
