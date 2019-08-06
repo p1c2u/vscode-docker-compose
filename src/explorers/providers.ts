@@ -66,7 +66,8 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             let projects = [];
             if (vscode.workspace && vscode.workspace.workspaceFolders) {
                 projects = vscode.workspace.workspaceFolders.map((folder) => {
-                    let name = projectNames[folder.index] || folder.name.replace(/[^\w\s]/gi, '');
+                    // project name from mapping or use workspace dir name
+                    let name = projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');
                     let executor = new DockerComposeCommandExecutor(name, files, shell, folder.uri.fsPath);
                     return new Project(name, executor);
                 });
