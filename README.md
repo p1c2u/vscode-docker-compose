@@ -36,6 +36,12 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.3.5
+
+* Keep environment variables on command execution
+* Project name normalisation fix
+* Custom container names fix
+
 ### 0.3.4
 
 * Container healthy icon
