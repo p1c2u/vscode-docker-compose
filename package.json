@@ -318,6 +318,9 @@
             "type": "string"
           },
           "default": [
+            "compose.yaml",
+            "compose.yml",
+            "docker-compose.yaml",
             "docker-compose.yml"
           ],
           "description": "Specify Docker Compose files."
