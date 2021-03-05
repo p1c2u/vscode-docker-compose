@@ -28,6 +28,9 @@
     "url": "https://github.com/p1c2u/vscode-docker-compose.git"
   },
   "activationEvents": [
+    "workspaceContains:**/compose.yaml",
+    "workspaceContains:**/compose.yml",
+    "workspaceContains:**/docker-compose.yaml",
     "workspaceContains:**/docker-compose.yml",
     "onCommand:docker-compose.explorer.refresh",
     "onCommand:docker-compose.project.start",
