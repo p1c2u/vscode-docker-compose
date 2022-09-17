@@ -5,5 +5,10 @@
     },
     "search.exclude": {
         "out": true // set this to false to include "out" folder in search results
-    }
+    },
+    "DockerRun.DisableDockerrc": true,
+    "DockerRun.Containers": [
+        "953ff61a418d",
+        "cf90d1c8d130"
+    ]
 }
