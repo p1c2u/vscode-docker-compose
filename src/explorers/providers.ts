@@ -1,13 +1,15 @@
 import { ChildProcess } from "child_process";
 import * as vscode from 'vscode';
 import { TreeItem, TreeDataProvider, EventEmitter, Event, workspace, window, ExtensionContext, Uri, TextDocument, Position } from "vscode";
-import { Project } from "../projects/models";
+import { Project, Workspace } from "../projects/models";
 import { ContainerNode } from "../containers/views";
 import { ExplorerNode } from "../explorers/views";
 import { ProjectNode, ProjectsNode } from "../projects/views";
 import { ServiceNode } from "../services/views";
 import { DockerExecutor } from "../executors/dockerExecutor";
 import { DockerComposeExecutor } from "../executors/dockerComposeExecutor";
+import { DockerComposeCommandNotFound } from "../executors/exceptions";
+import { MessageNode } from "../compose/views";
 
 export class AutoRefreshTreeDataProvider<T> {
 
@@ -39,7 +41,7 @@ export class AutoRefreshTreeDataProvider<T> {
     }
 
     async refresh(root?: T): Promise<void> {
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire(root);
     }
 
     public disableAutoRefresh() {
@@ -64,17 +66,16 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             private projectNames: string[]
         ) {
             super(context);
-            let projects = [];
-            if (vscode.workspace && vscode.workspace.workspaceFolders) {
-                projects = vscode.workspace.workspaceFolders.map((folder) => {
-                    // project name from mapping or use workspace dir name
-                    let name = projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');
-                    let dockerExecutor = new DockerExecutor(shell, folder.uri.fsPath);
-                    let dockerComposeExecutor = new DockerComposeExecutor(name, files, shell, folder.uri.fsPath);
-                    return new Project(name, dockerExecutor, dockerComposeExecutor);
-                });
-            }
-            this._root = new ProjectsNode(this.context, projects);
+        }
+
+        private _initRoot(): ExplorerNode {
+            let workspace = new Workspace(
+                vscode.workspace && vscode.workspace.workspaceFolders,
+                this.projectNames,
+                this.files,
+                this.shell
+            );
+            return new ProjectsNode(this.context, workspace);
         }
 
         protected getRefreshCallable(node: ExplorerNode) {
@@ -85,18 +86,23 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             return refresh;
         }
 
+        public getRoot(): ExplorerNode {
+            if (this._root === undefined)
+                this._root = this._initRoot();
+            return this._root;
+        }
+
         async getChildren(node?:ExplorerNode): Promise<ExplorerNode[]> {
             if (this._loading !== undefined) {
                 await this._loading;
                 this._loading = undefined;
             }
         
-            if (node === undefined) node = this._root;
+            if (node === undefined) node = this.getRoot();
 
             try {
                 return await node.getChildren();
             } catch (err) {
-                window.showErrorMessage("Docker Compose Error: " + err.message);
                 return node.handleError(err);
             }
         }

@@ -6,11 +6,11 @@ export class CommandExecutor {
 
     private terminals: { [id: string]: vscode.Terminal } = {};
     private _cwd: string;
-    private _env: object;
+    private _env: NodeJS.ProcessEnv;
 
-    constructor(cwd: string = null, env: object = {}) {
+    constructor(cwd: string = null, env: NodeJS.ProcessEnv = process.env) {
         this._cwd = cwd;
-        this._env = {...process.env, ...env};
+        this._env = env;
 
         if ('onDidCloseTerminal' in <any>vscode.window) {
             (<any>vscode.window).onDidCloseTerminal((terminal) => {

@@ -1,4 +1,4 @@
-import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { window, ExtensionContext, TreeItem, TreeItemCollapsibleState, ThemeIcon } from 'vscode';
 import { ResourceType } from "../enums";
 import { DockerComposeExecutorError, DockerComposeCommandNotFound, ComposeFileNotFound } from "../executors/exceptions";
 import { ExplorerNode } from '../explorers/views';
@@ -7,7 +7,8 @@ export class MessageNode extends ExplorerNode {
 
     constructor(
         public readonly context: ExtensionContext,
-        private readonly message: string
+        private readonly message: string,
+        private readonly iconId: string | undefined = null
     ) {
         super(context);
     }
@@ -19,6 +20,8 @@ export class MessageNode extends ExplorerNode {
     getTreeItem(): TreeItem | Promise<TreeItem> {
         const item = new TreeItem(this.message, TreeItemCollapsibleState.None);
         item.contextValue = ResourceType.Message;
+        if (this.iconId !== undefined)
+            item.iconPath = new ThemeIcon(this.iconId);
         return item;
     }
 
@@ -40,6 +43,7 @@ export abstract class ComposeNode extends ExplorerNode {
         } else if (err instanceof DockerComposeExecutorError) {
             return [new MessageNode(this.context, 'Failed to execute script docker-compose')];
         } else {
+            window.showErrorMessage("Docker Compose Error: " + err.message);
             return [new MessageNode(this.context, 'unexpected error')];
         }
     }

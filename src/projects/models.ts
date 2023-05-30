@@ -1,5 +1,6 @@
 'use strict';
 import { ChildProcess } from "child_process";
+import * as vscode from 'vscode';
 import { ContainerState } from "../containers/enums";
 import { Container } from "../containers/models";
 import { Service } from "../services/models";
@@ -14,7 +15,7 @@ export class Project {
     constructor(
         public readonly name: string,
         private readonly dockerExecutor: DockerExecutor,
-        private readonly dockerComposeExecutor: DockerComposeExecutor
+        private readonly dockerComposeExecutor: DockerComposeExecutor,
     ) {
         this._services = undefined;
         this._containers = undefined;
@@ -123,6 +124,39 @@ export class Project {
 
     public down(): ChildProcess {
         return this.dockerComposeExecutor.down();
+    }
+
+}
+
+
+export class Workspace {
+
+    private _services: Service[] | undefined;
+    private _containers: Container[] | undefined;
+
+    constructor(
+        public readonly workspaceFolders: readonly vscode.WorkspaceFolder[],
+        public readonly projectNames: string[],
+        public readonly files: string[] = [],
+        public readonly shell: string = "/bin/sh"
+    ) {
+        this._services = undefined;
+        this._containers = undefined;
+    }
+
+    public validate() {
+        let dockerComposeExecutor = new DockerComposeExecutor(null, this.files, this.shell);
+        dockerComposeExecutor.getVersion()
+    }
+
+    public getProjects(): Project[] {
+        return this.workspaceFolders.map((folder) => {
+            // project name from mapping or use workspace dir name
+            let name = this.projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');
+            let projectDockerExecutor = new DockerExecutor(this.shell, folder.uri.fsPath);
+            let projectDockerComposeExecutor = new DockerComposeExecutor(name, this.files, this.shell, folder.uri.fsPath);
+            return new Project(name, projectDockerExecutor, projectDockerComposeExecutor);
+        });
     }
 
 }

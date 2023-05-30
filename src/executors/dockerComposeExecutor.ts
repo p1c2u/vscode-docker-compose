@@ -8,8 +8,10 @@ export class DockerComposeExecutor extends CommandExecutor {
     private _files: string[];
     private _shell: string;
 
-    constructor(name: string, files: string[], shell: string = "/bin/sh", cwd: string = null) {
-        super(cwd, {COMPOSE_PROJECT_NAME: name})
+    constructor(name: string = null, files: string[] = [], shell: string = "/bin/sh", cwd: string = null) {
+        if (name === null)
+            process.env.COMPOSE_PROJECT_NAME = name
+        super(cwd, process.env)
         this._files = files;
         this._shell = shell;
     }
@@ -20,6 +22,11 @@ export class DockerComposeExecutor extends CommandExecutor {
 
     private getShellCommand(): string {
         return this._shell;
+    }
+
+    public getVersion(): string {
+        let composeCommand = `--version`;
+        return this.executeSync(composeCommand);
     }
 
     public getConnfigServices(): string {
@@ -79,9 +86,11 @@ export class DockerComposeExecutor extends CommandExecutor {
             return super.executeSync(composeCommand);
         }
         catch (err) {
-            if (err.message.includes("No such file"))
+            // 14 - docker compose configuration file not found
+            if (err.status === 14)
                 throw new ComposeFileNotFound(err.message, err.output);
-            else if (err.message.includes("'docker-compose' is not recognized"))
+            // 127 - docker compose command not found
+            else if (err.status === 127)
                 throw new DockerComposeCommandNotFound(err.message, err.output);
             else
                 throw new DockerComposeExecutorError(err.message, err.output);

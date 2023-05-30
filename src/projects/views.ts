@@ -1,8 +1,10 @@
 import { TreeItem, TreeItemCollapsibleState, Uri, ExtensionContext, window } from 'vscode';
 import { ResourceType } from "../enums";
-import { Project } from "../projects/models";
+import { Project, Workspace } from "../projects/models";
 import { ServiceNode } from "../services/views";
-import { ComposeNode } from '../compose/views';
+import { ComposeNode, MessageNode } from '../compose/views';
+import { DockerComposeCommandNotFound } from '../executors/exceptions';
+import { ExplorerNode } from '../explorers/views';
 
 export class ProjectNode extends ComposeNode {
 
@@ -39,15 +41,25 @@ export class ProjectsNode extends ComposeNode {
 
     constructor(
         context: ExtensionContext,
-        private readonly projects: Project[]
+        private readonly workspace: Workspace
     ) {
         super(context);
     }
 
-    async getChildren(): Promise<ComposeNode[]> {
+    async getChildren(): Promise<ExplorerNode[]> {
         this.resetChildren();
 
-        this.children = this.projects
+        try {
+            this.workspace.validate()
+        } catch (err) {
+            if (err instanceof DockerComposeCommandNotFound) {
+                window.showErrorMessage("Docker Compose executable not found.");
+                return [
+                    new MessageNode(this.context, 'Docker Compose not found.', "error")
+                ];
+            }
+        }
+        this.children = this.workspace.getProjects()
             .map(project => new ProjectNode(this.context, project));
         return this.children;
     }
