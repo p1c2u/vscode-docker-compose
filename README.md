@@ -36,6 +36,10 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.4.0
+
+* Make docker compose great again
+
 ### 0.3.5
 
 * Keep environment variables on command execution

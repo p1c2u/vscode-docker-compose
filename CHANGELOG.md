@@ -1,3 +1,6 @@
+## 0.4.0
+- Make docker compose great again
+
 ## 0.3.5
 - Keep environment variables on command execution
 - Project name normalisation fix
