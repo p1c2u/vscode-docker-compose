@@ -1,3 +1,6 @@
+## 0.4.1
+- Sync vscode engine with types
+
 ## 0.4.0
 - Make docker compose great again
 
