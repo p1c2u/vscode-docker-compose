@@ -3,7 +3,7 @@
   "displayName": "Docker Compose",
   "description": "Manage Docker Compose services",
   "icon": "images/icon.png",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "publisher": "p1c2u",
   "license": "MIT",
   "engines": {

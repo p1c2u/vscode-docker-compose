@@ -1,3 +1,6 @@
+## 0.4.2
+- containers view retouch
+
 ## 0.4.1
 - Sync vscode engine with types
 

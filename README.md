@@ -36,6 +36,10 @@ The extension is in early stage. Feel free to report bugs.
 
 ## Release Notes
 
+### 0.4.2
+
+* containers view retouch
+
 ### 0.4.1
 
 * Sync vscode engine with types
