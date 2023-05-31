@@ -1,9 +1,8 @@
-import { TreeItem, TreeItemCollapsibleState, Uri, ExtensionContext, window } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, ExtensionContext, ThemeIcon } from 'vscode';
 import { ResourceType } from "../enums";
 import { Project, Workspace } from "../projects/models";
 import { ServiceNode } from "../services/views";
-import { ComposeNode, MessageNode } from '../compose/views';
-import { DockerComposeCommandNotFound } from '../executors/exceptions';
+import { ComposeNode } from '../compose/views';
 import { ExplorerNode } from '../explorers/views';
 
 export class ProjectNode extends ComposeNode {
@@ -18,11 +17,7 @@ export class ProjectNode extends ComposeNode {
     async getChildren(): Promise<ComposeNode[]> {
         this.resetChildren();
 
-        let services;
-
-        this.project.refreshContainers();
-
-        services = this.project.getServices();
+        let services = await this.project.getServices(true);
 
         this.children = services
             .map(service => new ServiceNode(this.context, service));
@@ -32,6 +27,7 @@ export class ProjectNode extends ComposeNode {
     getTreeItem(): TreeItem {
         const item = new TreeItem(this.project.name, TreeItemCollapsibleState.Expanded);
         item.contextValue = ResourceType.Project;
+        item.iconPath = new ThemeIcon("multiple-windows");
         return item;
     }
 
@@ -52,12 +48,7 @@ export class ProjectsNode extends ComposeNode {
         try {
             this.workspace.validate()
         } catch (err) {
-            if (err instanceof DockerComposeCommandNotFound) {
-                window.showErrorMessage("Docker Compose executable not found.");
-                return [
-                    new MessageNode(this.context, 'Docker Compose not found.', "error")
-                ];
-            }
+            return this.handleError(err);
         }
         this.children = this.workspace.getProjects()
             .map(project => new ProjectNode(this.context, project));

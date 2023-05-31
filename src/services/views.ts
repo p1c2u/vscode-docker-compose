@@ -1,5 +1,4 @@
-import * as path from 'path';
-import { Command, TreeItem, TreeItemCollapsibleState, ExtensionContext } from "vscode";
+import { TreeItem, TreeItemCollapsibleState, ExtensionContext } from "vscode";
 import { ResourceType } from "../enums";
 import { Service } from "../services/models";
 import { ContainerNode } from "../containers/views";
@@ -22,7 +21,7 @@ export class ServiceNode extends ComposeNode {
     async getChildren(): Promise<ComposeNode[]> {
         this.resetChildren();
 
-        const containers = this.service.project.getServiceContainers(this.service.name);
+        const containers = await this.service.project.getContainers(false, this.service.name);
 
         let context = this.context;
         this.children = containers

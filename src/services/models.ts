@@ -2,24 +2,19 @@
 import { ChildProcess } from "child_process";
 import { Container } from "../containers/models";
 import { Project } from "../projects/models";
-import { DockerComposeExecutor } from "../executors/dockerComposeExecutor";
+import { ComposeExecutor } from "../executors/composeExecutor";
 
 export class Service {
 
     constructor(
         public project: Project,
         public readonly name: string,
-        private executor: DockerComposeExecutor
+        private executor: ComposeExecutor
     ) {
     }
 
-    public getContainers(): Container[] {
-        let containers = this.project.getContainers();
-
-        let pattern = this.project.name + '_' + this.name + '_';
-        return containers.filter((container) => {
-            return container.name.includes(pattern);
-        });
+    async getContainers(): Promise<Container[]> {
+        return await this.project.getContainers(false, this.name);
     }
 
     public shell(): void {

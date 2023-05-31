@@ -1,15 +1,11 @@
 import { ChildProcess } from "child_process";
 import * as vscode from 'vscode';
 import { TreeItem, TreeDataProvider, EventEmitter, Event, workspace, window, ExtensionContext, Uri, TextDocument, Position } from "vscode";
-import { Project, Workspace } from "../projects/models";
+import { Workspace } from "../projects/models";
 import { ContainerNode } from "../containers/views";
 import { ExplorerNode } from "../explorers/views";
 import { ProjectNode, ProjectsNode } from "../projects/views";
 import { ServiceNode } from "../services/views";
-import { DockerExecutor } from "../executors/dockerExecutor";
-import { DockerComposeExecutor } from "../executors/dockerComposeExecutor";
-import { DockerComposeCommandNotFound } from "../executors/exceptions";
-import { MessageNode } from "../compose/views";
 
 export class AutoRefreshTreeDataProvider<T> {
 

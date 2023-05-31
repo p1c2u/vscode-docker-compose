@@ -8,10 +8,17 @@ export class Container {
         private readonly executor: DockerExecutor,
         public readonly name: string,
         public readonly command: string,
-        public readonly state: ContainerState,
-        public readonly ports: string[],
-        public readonly healthy: boolean = false
+        public readonly status: string,
+        public readonly ports: string[]
     ) {
+    }
+
+    get state(): ContainerState {
+        return this.status.startsWith('Up') ? ContainerState.Up : ContainerState.Exit;
+    }
+
+    get healthy(): boolean | null {
+        return this.status.includes('(healthy)') ? true : this.status.includes('(unhealthy)') ? false : null;
     }
 
     public attach(): void {

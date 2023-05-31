@@ -1,15 +1,14 @@
 import { ChildProcess } from "child_process";
 import { CommandExecutor } from "./commandExecutor";
-import { ComposeFileNotFound, DockerComposeCommandNotFound, DockerComposeExecutorError } from "./exceptions";
-import { WorkspaceConfigurator } from "../configurators/workspaceConfigurator";
+import { ComposeFileNotFound, ComposeCommandNotFound, ComposeExecutorError, ComposeUnhandledError } from "./exceptions";
 
-export class DockerComposeExecutor extends CommandExecutor {
+export class ComposeExecutor extends CommandExecutor {
 
     private _files: string[];
     private _shell: string;
 
     constructor(name: string = null, files: string[] = [], shell: string = "/bin/sh", cwd: string = null) {
-        if (name === null)
+        if (name !== null)
             process.env.COMPOSE_PROJECT_NAME = name
         super(cwd, process.env)
         this._files = files;
@@ -17,7 +16,7 @@ export class DockerComposeExecutor extends CommandExecutor {
     }
 
     getBaseCommand(): string {
-        return this._files.reduce((myString, files) => myString + ' -f ' + files, 'docker-compose');
+        return this._files.reduce((myString, files) => myString + ' -f ' + files, 'docker compose');
     }
 
     private getShellCommand(): string {
@@ -25,7 +24,7 @@ export class DockerComposeExecutor extends CommandExecutor {
     }
 
     public getVersion(): string {
-        let composeCommand = `--version`;
+        let composeCommand = `version`;
         return this.executeSync(composeCommand);
     }
 
@@ -86,14 +85,17 @@ export class DockerComposeExecutor extends CommandExecutor {
             return super.executeSync(composeCommand);
         }
         catch (err) {
+            // 1 - Catchall for general errors
+            if (err.status === 1)
+                throw new ComposeExecutorError(err.message, err.output);
             // 14 - docker compose configuration file not found
-            if (err.status === 14)
+            else if (err.status === 14)
                 throw new ComposeFileNotFound(err.message, err.output);
             // 127 - docker compose command not found
             else if (err.status === 127)
-                throw new DockerComposeCommandNotFound(err.message, err.output);
+                throw new ComposeCommandNotFound(err.message, err.output);
             else
-                throw new DockerComposeExecutorError(err.message, err.output);
+                throw new ComposeUnhandledError(err.message, err.output);
         }
     }
 

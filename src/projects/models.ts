@@ -1,60 +1,86 @@
 'use strict';
 import { ChildProcess } from "child_process";
 import * as vscode from 'vscode';
-import { ContainerState } from "../containers/enums";
 import { Container } from "../containers/models";
 import { Service } from "../services/models";
 import { DockerExecutor } from "../executors/dockerExecutor";
-import { DockerComposeExecutor } from "../executors/dockerComposeExecutor";
+import { ComposeExecutor } from "../executors/composeExecutor";
+import { ps } from "docker-compose/dist/v2";
 
 export class Project {
 
+    private _files: string[];
+    private _shell: string;
+
     private _services: Service[] | undefined;
     private _containers: Container[] | undefined;
+    private dockerExecutor: DockerExecutor;
+    private composeExecutor: ComposeExecutor;
 
     constructor(
         public readonly name: string,
-        private readonly dockerExecutor: DockerExecutor,
-        private readonly dockerComposeExecutor: DockerComposeExecutor,
+        public readonly cwd: string = null,
+        files: string[] = [],
+        shell: string = "/bin/sh"
     ) {
+        this._files = files;
+        this._shell = shell;
+
         this._services = undefined;
         this._containers = undefined;
+
+        this.dockerExecutor = new DockerExecutor(this._shell, this.cwd);
+        this.composeExecutor = new ComposeExecutor(name, this._files, this._shell, this.cwd);
     }
 
-    public getServices(force: boolean = false): Service[] {
+    async getServices(force: boolean = false): Promise<Service[]> {
         if (this._services === undefined || force) {
-            this.refreshServices();
+            await this.refreshServices();
         }
         return this._services;
     }
 
-    public refreshServices(): void {
-        this._services = this._getServices();
+    async refreshServices(): Promise<void> {
+        this._services = await this._getServices();
     }
 
-    private _getServices(): Service[] {
-        let servicesString = this.dockerComposeExecutor.getConnfigServices();
+    async _getServices(): Promise<Service[]> {
+        let servicesString = this.composeExecutor.getConnfigServices();
         let linesString = servicesString.split(/[\r\n]+/g).filter((item) => item)
         let project = this;
-        let executor = this.dockerComposeExecutor;
+        let executor = this.composeExecutor;
         return linesString.map(function (serviceString, index, array) {
             return new Service(project, serviceString, executor);
         });
     }
 
-    public getContainers(force: boolean = false): Container[] {
+    async getContainers(force: boolean = false, serviceName?: string): Promise<Container[]> {
         if (this._containers === undefined || force) {
-            this.refreshContainers();
+            await this.refreshContainers();
+        }
+        if (serviceName !== undefined) {
+            let projectPattern = this.name + '-'
+            let servicePattern = projectPattern + serviceName + '-';
+            return this._containers.filter((container) => {
+                // standard container name
+                if (container.name.startsWith(projectPattern)) {
+                    return container.name.includes(servicePattern);
+                // custom container name
+                } else {
+                    let name = this.getContainerServiceName(container.name);
+                    return name == serviceName;
+                }
+            });
         }
         return this._containers;
     }
 
-    public refreshContainers(): void {
-        this._containers = this._getContainers();
+    async refreshContainers(): Promise<void> {
+        this._containers = await this._getContainers();
     }
 
-    private _getContainers(): Container[] {
-        let resultString = this.dockerComposeExecutor.getPs();
+    async _getContainers1(): Promise<Container[]> {
+        let resultString = this.composeExecutor.getPs();
         let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
         // find separator line
         let sepLineIdx = null;
@@ -73,33 +99,30 @@ export class Project {
             const items = containerString.split(/\s{2,}/g).filter((item) => item);
             const name = items[0];
             const command = items[1];
-            const state = items[2].startsWith('Up') ? ContainerState.Up : ContainerState.Exit;
-            const healthy = items[2].includes('(healthy)') ? true : items[2].includes('(unhealthy)') ? false : null;
+            const state = items[2];
             const ports = items.length == 4 ? items[3].split(', ') : [];
-            return new Container(executor, name, command, state, ports, healthy);
+            return new Container(executor, name, command, state, ports);
         });
     }
 
     public getContainerServiceName(name: string) {
-        let resultString = this.dockerExecutor.getPs(this.name, name);
+        let resultString = this.dockerExecutor.getPs(this.name, name, this.cwd);
         let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
         return linesString[0];
     }
 
-    public getServiceContainers(serviceName: string): Container[] {
-        const containers = this.getContainers();
-
-        let projectPattern = this.name + '_'
-        let servicePattern = projectPattern + serviceName + '_';
-        return containers.filter((container) => {
-            // standard container name
-            if (container.name.startsWith(projectPattern)) {
-                return container.name.includes(servicePattern);
-            // custom container name
-            } else {
-                let name = this.getContainerServiceName(container.name);
-                return name == serviceName;
-            }
+    async _getContainers(): Promise<Container[]> {
+        let config = ["docker-compose.yml", "docker-compose.yaml"]
+        let result = await ps({cwd: this.cwd, log: true, config: config, commandOptions: ["--all"]});
+        return result.data.services.map((service) => {
+            const ports = service.ports.map((port) => port.exposed.port.toString());
+            return new Container(
+                this.dockerExecutor,
+                service.name,
+                service.command,
+                service.state,
+                ports
+            );
         });
     }
 
@@ -111,19 +134,19 @@ export class Project {
     }
 
     public start(): ChildProcess {
-        return this.dockerComposeExecutor.start();
+        return this.composeExecutor.start();
     }
 
     public stop(): ChildProcess {
-        return this.dockerComposeExecutor.stop();
+        return this.composeExecutor.stop();
     }
 
     public up(): ChildProcess {
-        return this.dockerComposeExecutor.up();
+        return this.composeExecutor.up();
     }
 
     public down(): ChildProcess {
-        return this.dockerComposeExecutor.down();
+        return this.composeExecutor.down();
     }
 
 }
@@ -131,31 +154,26 @@ export class Project {
 
 export class Workspace {
 
-    private _services: Service[] | undefined;
-    private _containers: Container[] | undefined;
-
     constructor(
         public readonly workspaceFolders: readonly vscode.WorkspaceFolder[],
         public readonly projectNames: string[],
         public readonly files: string[] = [],
         public readonly shell: string = "/bin/sh"
     ) {
-        this._services = undefined;
-        this._containers = undefined;
     }
 
     public validate() {
-        let dockerComposeExecutor = new DockerComposeExecutor(null, this.files, this.shell);
-        dockerComposeExecutor.getVersion()
+        let dockerExecutor = new DockerExecutor(this.shell);
+        dockerExecutor.getVersion()
+        let composeExecutor = new ComposeExecutor(null, this.files, this.shell);
+        composeExecutor.getVersion()
     }
 
     public getProjects(): Project[] {
         return this.workspaceFolders.map((folder) => {
             // project name from mapping or use workspace dir name
             let name = this.projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');
-            let projectDockerExecutor = new DockerExecutor(this.shell, folder.uri.fsPath);
-            let projectDockerComposeExecutor = new DockerComposeExecutor(name, this.files, this.shell, folder.uri.fsPath);
-            return new Project(name, projectDockerExecutor, projectDockerComposeExecutor);
+            return new Project(name, folder.uri.fsPath, this.files, this.shell);
         });
     }
 

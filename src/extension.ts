@@ -1,13 +1,11 @@
 'use strict';
 import * as vscode from 'vscode';
-import { Project } from "./projects/models";
 import { AppInsightsClient } from "./telemetry/appInsightsClient";
 import { NullClient } from "./telemetry/nullClient";
 import { WorkspaceConfigurator } from "./configurators/workspaceConfigurator";
-import { DockerComposeExecutor } from "./executors/dockerComposeExecutor";
 import { DockerComposeProvider } from "./explorers/providers";
 import { ContainerNode } from "./containers/views";
-import { ProjectNode, ProjectsNode } from "./projects/views";
+import { ProjectNode } from "./projects/views";
 import { ServiceNode } from "./services/views";
 
 export function activate(context: vscode.ExtensionContext) {

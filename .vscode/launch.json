@@ -13,7 +13,8 @@
             "outFiles": [
                 "${workspaceFolder}/out/**/*.js"
             ],
-            "preLaunchTask": "npm: vscode:prepublish"
+            "preLaunchTask": "npm: vscode:prepublish",
+            "smartStep": true
         },
         {
             "name": "Extension",

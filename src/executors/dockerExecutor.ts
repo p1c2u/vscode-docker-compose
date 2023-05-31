@@ -1,7 +1,6 @@
 import { ChildProcess } from "child_process";
 import { CommandExecutor } from "./commandExecutor";
-import { ComposeFileNotFound, DockerComposeCommandNotFound, DockerComposeExecutorError } from "./exceptions";
-import { WorkspaceConfigurator } from "../configurators/workspaceConfigurator";
+import { DockerExecutorError, DockerUnhandledError } from "./exceptions";
 
 export class DockerExecutor extends CommandExecutor {
 
@@ -20,8 +19,13 @@ export class DockerExecutor extends CommandExecutor {
         return this._shell;
     }
 
-    public getPs(projectName: string, containerName: string): string {
-        let dockerCommand = `ps -a --format '{{.Label "com.docker.compose.service"}}' --filter name=${containerName} --filter label=com.docker.compose.project=${projectName}`
+    public getVersion(): string {
+        let dockerCommand = `version`;
+        return this.executeSync(dockerCommand);
+    }
+
+    public getPs(projectName: string, containerName: string, projectDir: string): string {
+        let dockerCommand = `ps -a --format '{{.Label "com.docker.compose.service"}}' --filter name=${containerName} --filter label=com.docker.compose.project=${projectName} --filter label=com.docker.compose.project.working_dir=${projectDir}`
         return this.executeSync(dockerCommand);
     }
 
@@ -50,4 +54,16 @@ export class DockerExecutor extends CommandExecutor {
         return this.execute(dockerCommand);
     }
 
+    public executeSync(dockerCommand: string) {
+        try {
+            return super.executeSync(dockerCommand);
+        }
+        catch (err) {
+            // 1 - Catchall for general errors
+            if (err.status === 1)
+                throw new DockerExecutorError(err.message, err.output);
+            else
+                throw new DockerUnhandledError(err.message, err.output);
+        }
+    }
 }

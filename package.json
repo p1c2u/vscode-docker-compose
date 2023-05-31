@@ -77,31 +77,31 @@
       },
       {
         "command": "docker-compose.project.up",
-        "title": "Up",
+        "title": "Create and Start",
         "description": "Docker Compose project up",
         "category": "Docker Compose"
       },
       {
         "command": "docker-compose.project.down",
-        "title": "Down",
+        "title": "Stop and Remove",
         "description": "Docker Compose project down",
         "category": "Docker Compose"
       },
       {
         "command": "docker-compose.service.shell",
-        "title": "Shell",
+        "title": "Open shell",
         "description": "Docker Compose service shell",
         "category": "Docker Compose"
       },
       {
         "command": "docker-compose.service.up",
-        "title": "Up",
+        "title": "Create and Start",
         "description": "Docker Compose service up",
         "category": "Docker Compose"
       },
       {
         "command": "docker-compose.service.down",
-        "title": "Down",
+        "title": "Stop and Remove",
         "description": "Docker Compose service down",
         "category": "Docker Compose"
       },
@@ -143,7 +143,7 @@
       },
       {
         "command": "docker-compose.container.logs",
-        "title": "Logs",
+        "title": "Open logs",
         "description": "Docker Compose container logs",
         "category": "Docker Compose"
       },
@@ -176,89 +176,89 @@
       ],
       "view/item/context": [
         {
+          "command": "docker-compose.project.up",
+          "when": "view == dockerComposeServices && viewItem == docker-compose:project",
+          "group": "docker-compose:project-2-general@0"
+        },
+        {
           "command": "docker-compose.project.start",
           "when": "view == dockerComposeServices && viewItem == docker-compose:project",
-          "group": "docker-compose:project@0"
+          "group": "docker-compose:project-2-general@1"
         },
         {
           "command": "docker-compose.project.stop",
           "when": "view == dockerComposeServices && viewItem == docker-compose:project",
-          "group": "docker-compose:project@1"
-        },
-        {
-          "command": "docker-compose.project.up",
-          "when": "view == dockerComposeServices && viewItem == docker-compose:project",
-          "group": "docker-compose:project@2"
+          "group": "docker-compose:project-2-general@2"
         },
         {
           "command": "docker-compose.project.down",
           "when": "view == dockerComposeServices && viewItem == docker-compose:project",
-          "group": "docker-compose:project@3"
+          "group": "docker-compose:project-2-general@3"
         },
         {
           "command": "docker-compose.service.shell",
           "when": "view == dockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@1"
+          "group": "docker-compose:service-1-top@1"
         },
         {
           "command": "docker-compose.service.up",
           "when": "view == dockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@2"
+          "group": "docker-compose:service-2-general@2"
         },
         {
           "command": "docker-compose.service.down",
           "when": "view == dockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@8"
+          "group": "docker-compose:service-2-general@8"
         },
         {
           "command": "docker-compose.service.start",
           "when": "view == dockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@3"
-        },
-        {
-          "command": "docker-compose.service.stop",
-          "when": "view == dockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@4"
+          "group": "docker-compose:service-2-general@3"
         },
         {
           "command": "docker-compose.service.restart",
           "when": "view == dockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@5"
+          "group": "docker-compose:service-2-general@4"
+        },
+        {
+          "command": "docker-compose.service.stop",
+          "when": "view == dockerComposeServices && viewItem == docker-compose:service",
+          "group": "docker-compose:service-2-general@5"
         },
         {
           "command": "docker-compose.service.build",
-          "when": "view == ddockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@6"
+          "when": "view == dockerComposeServices && viewItem == docker-compose:service",
+          "group": "docker-compose:service-2-general@6"
         },
         {
           "command": "docker-compose.service.kill",
-          "when": "view == ddockerComposeServices && viewItem == docker-compose:service",
-          "group": "docker-compose:service@7"
-        },
-        {
-          "command": "docker-compose.container.attach",
-          "when": "view == ddockerComposeServices && viewItem == docker-compose:running-container",
-          "group": "docker-compose:container@0"
+          "when": "view == dockerComposeServices && viewItem == docker-compose:service",
+          "group": "docker-compose:service-2-general@7"
         },
         {
           "command": "docker-compose.container.logs",
-          "when": "view == ddockerComposeServices && viewItem == docker-compose:running-container",
-          "group": "docker-compose:container@1"
+          "when": "view == dockerComposeServices && viewItem == docker-compose:running-container",
+          "group": "docker-compose:container-1-top@0"
+        },
+        {
+          "command": "docker-compose.container.attach",
+          "when": "view == dockerComposeServices && viewItem == docker-compose:running-container",
+          "group": "docker-compose:container-1-top@1"
         },
         {
           "command": "docker-compose.container.start",
-          "when": "view == ddockerComposeServices && viewItem == docker-compose:exited-container",
-          "group": "docker-compose:container@0"
+          "when": "view == dockerComposeServices && viewItem == docker-compose:exited-container",
+          "group": "docker-compose:container-2-general@0"
         },
         {
           "command": "docker-compose.container.stop",
-          "when": "view == ddockerComposeServices && viewItem == docker-compose:running-container",
-          "group": "docker-compose:container@1"
+          "when": "view == dockerComposeServices && viewItem == docker-compose:running-container",
+          "group": "docker-compose:container-2-general@1"
         },
         {
           "command": "docker-compose.container.kill",
-          "when": "view == ddockerComposeServices && viewItem == docker-compose:running-container",
-          "group": "docker-compose:container@2"
+          "when": "view == dockerComposeServices && viewItem == docker-compose:running-container",
+          "group": "docker-compose:container-2-general@2"
         }
       ]
     },
