@@ -9,6 +9,8 @@ import { ps } from "docker-compose/dist/v2";
 
 export class Project {
 
+    private _id: number;
+
     private _files: string[];
     private _shell: string;
 
@@ -23,6 +25,7 @@ export class Project {
         files: string[] = [],
         shell: string = "/bin/sh"
     ) {
+        this._id = Math.random();
         this._files = files;
         this._shell = shell;
 
@@ -30,7 +33,7 @@ export class Project {
         this._containers = undefined;
 
         this.dockerExecutor = new DockerExecutor(this._shell, this.cwd);
-        this.composeExecutor = new ComposeExecutor(name, this._files, this._shell, this.cwd);
+        this.composeExecutor = new ComposeExecutor(this._files, this._shell, this.cwd);
     }
 
     async getServices(force: boolean = false): Promise<Service[]> {
@@ -47,30 +50,15 @@ export class Project {
     async _getServices(): Promise<Service[]> {
         let servicesString = this.composeExecutor.getConnfigServices();
         let linesString = servicesString.split(/[\r\n]+/g).filter((item) => item)
-        let project = this;
-        let executor = this.composeExecutor;
+        let that = this;
         return linesString.map(function (serviceString, index, array) {
-            return new Service(project, serviceString, executor);
+            return new Service(that, serviceString, that.dockerExecutor, that.composeExecutor);
         });
     }
 
-    async getContainers(force: boolean = false, serviceName?: string): Promise<Container[]> {
+    async getContainers(force: boolean = false): Promise<Container[]> {
         if (this._containers === undefined || force) {
             await this.refreshContainers();
-        }
-        if (serviceName !== undefined) {
-            let projectPattern = this.name + '-'
-            let servicePattern = projectPattern + serviceName + '-';
-            return this._containers.filter((container) => {
-                // standard container name
-                if (container.name.startsWith(projectPattern)) {
-                    return container.name.includes(servicePattern);
-                // custom container name
-                } else {
-                    let name = this.getContainerServiceName(container.name);
-                    return name == serviceName;
-                }
-            });
         }
         return this._containers;
     }
@@ -79,39 +67,7 @@ export class Project {
         this._containers = await this._getContainers();
     }
 
-    async _getContainers1(): Promise<Container[]> {
-        let resultString = this.composeExecutor.getPs();
-        let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
-        // find separator line
-        let sepLineIdx = null;
-        for (let [idx, lineString] of linesString.entries()) {
-            if (lineString.startsWith("---")) {
-                sepLineIdx = idx;
-                break;
-            }
-        }
-        // process containers lines
-        if (sepLineIdx === null)
-            return [];
-        let containersString = linesString.slice(sepLineIdx+1);
-        let executor = this.dockerExecutor;
-        return containersString.map(function (containerString, index, array) {
-            const items = containerString.split(/\s{2,}/g).filter((item) => item);
-            const name = items[0];
-            const command = items[1];
-            const state = items[2];
-            const ports = items.length == 4 ? items[3].split(', ') : [];
-            return new Container(executor, name, command, state, ports);
-        });
-    }
-
-    public getContainerServiceName(name: string) {
-        let resultString = this.dockerExecutor.getPs(this.name, name, this.cwd);
-        let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
-        return linesString[0];
-    }
-
-    async _getContainers(): Promise<Container[]> {
+    async _getContainers2(): Promise<Container[]> {
         let config = ["docker-compose.yml", "docker-compose.yaml"]
         let result = await ps({cwd: this.cwd, log: true, config: config, commandOptions: ["--all"]});
         return result.data.services.map((service) => {
@@ -122,6 +78,19 @@ export class Project {
                 service.command,
                 service.state,
                 ports
+            );
+        });
+    }
+
+    async _getContainers(): Promise<Container[]> {
+        let result = this.composeExecutor.getPs2();
+        return result.map((container) => {
+            return new Container(
+                this.dockerExecutor,
+                container.Name,
+                container.Command,
+                container.Status,
+                []
             );
         });
     }
@@ -154,22 +123,35 @@ export class Project {
 
 export class Workspace {
 
+    private _projects: Project[] | undefined;
+
     constructor(
         public readonly workspaceFolders: readonly vscode.WorkspaceFolder[],
         public readonly projectNames: string[],
         public readonly files: string[] = [],
         public readonly shell: string = "/bin/sh"
     ) {
+        this._projects = undefined;
     }
 
     public validate() {
         let dockerExecutor = new DockerExecutor(this.shell);
         dockerExecutor.getVersion()
-        let composeExecutor = new ComposeExecutor(null, this.files, this.shell);
+        let composeExecutor = new ComposeExecutor(this.files, this.shell);
         composeExecutor.getVersion()
     }
 
-    public getProjects(): Project[] {
+    public getProjects(force: boolean = false): Project[] {
+        if (this._projects === undefined || force)
+            this.refreshProjects();
+        return this._projects;
+    }
+
+    public refreshProjects(): void {
+        this._projects = this._getProjects();
+    }
+
+    private _getProjects(): Project[] {
         return this.workspaceFolders.map((folder) => {
             // project name from mapping or use workspace dir name
             let name = this.projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');

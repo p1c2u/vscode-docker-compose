@@ -37,6 +37,11 @@
     "views": {
       "dockerComposeView": [
         {
+          "id": "dockerComposeProjects",
+          "name": "Projects",
+          "when": "config.docker-compose.showExplorer == true"
+        },
+        {
           "id": "dockerComposeServices",
           "name": "Services",
           "when": "config.docker-compose.showExplorer == true"
@@ -61,6 +66,12 @@
           "dark": "resources/dark/refresh.svg"
         },
         "description": "Refresh Docker Compose explorer",
+        "category": "Docker Compose"
+      },
+      {
+        "command": "docker-compose.project.select",
+        "title": "Select",
+        "description": "Docker Compose project select",
         "category": "Docker Compose"
       },
       {

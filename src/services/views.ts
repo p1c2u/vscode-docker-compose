@@ -21,7 +21,7 @@ export class ServiceNode extends ComposeNode {
     async getChildren(): Promise<ComposeNode[]> {
         this.resetChildren();
 
-        const containers = await this.service.project.getContainers(false, this.service.name);
+        const containers = await this.service.getContainers(true);
 
         let context = this.context;
         this.children = containers

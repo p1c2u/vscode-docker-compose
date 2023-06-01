@@ -1,4 +1,4 @@
-import { Command, Disposable, ExtensionContext, TreeItem } from 'vscode';
+import { Command, Disposable, EventEmitter, ExtensionContext, TreeItem, TreeView } from 'vscode';
 
 export abstract class ExplorerNode extends Disposable {
 

@@ -50,28 +50,104 @@ export class AutoRefreshTreeDataProvider<T> {
 
 }
 
-export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> implements TreeDataProvider<ExplorerNode> {
+export class DockerComposeProjectsProvider implements TreeDataProvider<ExplorerNode> {
+
+    private _root?: ExplorerNode;
+    private _loading: Promise<void> | undefined;
+
+    constructor(
+        protected context: ExtensionContext,
+        private workspace: Workspace,
+    ) {
+    }
+
+    private _initRoot(): ExplorerNode {
+        return new ProjectsNode(this.context, this.workspace, vscode.TreeItemCollapsibleState.None);
+    }
+
+    protected _onDidChangeTreeData = new EventEmitter<any>();
+    public get onDidChangeTreeData(): Event<any> {
+        return this._onDidChangeTreeData.event;
+    }
+
+    async refresh(root?: ExplorerNode): Promise<void> {
+        this._onDidChangeTreeData.fire(root);
+    }
+
+    protected getRefreshCallable(node: ExplorerNode) {
+        let that = this;
+        async function refresh() {
+            await that.refresh(node);
+        }
+        return refresh;
+    }
+
+    public getRoot(): ExplorerNode {
+        if (this._root === undefined)
+            this._root = this._initRoot();
+        return this._root;
+    }
+
+    async getChildren(node?:ExplorerNode): Promise<ExplorerNode[]> {
+        if (this._loading !== undefined) {
+            await this._loading;
+            this._loading = undefined;
+        }
+    
+        if (node === undefined) node = this.getRoot();
+
+        try {
+            return await node.getChildren();
+        } catch (err) {
+            return node.handleError(err);
+        }
+    }
+
+    async getTreeItem(node: ExplorerNode): Promise<TreeItem> {
+        return node.getTreeItem();
+    }
+
+    protected _onDidChangeSelect = new EventEmitter<any>();
+    public get onDidChangeSelect(): Event<void> {
+        return this._onDidChangeSelect.event;
+    }
+
+    public async startProject(node: ProjectNode): Promise<ChildProcess> {
+        return node.project.start();
+    }
+
+    public async stopProject(node: ProjectNode): Promise<ChildProcess> {
+        return node.project.stop();
+    }
+
+    public async upProject(node: ProjectNode): Promise<ChildProcess> {
+        let child_process = node.project.up();
+        child_process.on('close', this.getRefreshCallable(node));
+        return child_process;
+    }
+
+    public async downProject(node: ProjectNode): Promise<ChildProcess> {
+        let child_process = node.project.down();
+        child_process.on('close', this.getRefreshCallable(node));
+        return child_process;
+    }
+
+}
+
+export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<any> implements TreeDataProvider<ExplorerNode> {
     
         private _root?: ExplorerNode;
         private _loading: Promise<void> | undefined;
 
         constructor(
             context: ExtensionContext,
-            private files: string[],
-            private shell: string,
-            private projectNames: string[]
+            private workspace: Workspace,
         ) {
             super(context);
         }
 
         private _initRoot(): ExplorerNode {
-            let workspace = new Workspace(
-                vscode.workspace && vscode.workspace.workspaceFolders,
-                this.projectNames,
-                this.files,
-                this.shell
-            );
-            return new ProjectsNode(this.context, workspace);
+            return new ProjectsNode(this.context, this.workspace);
         }
 
         protected getRefreshCallable(node: ExplorerNode) {
@@ -86,6 +162,10 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             if (this._root === undefined)
                 this._root = this._initRoot();
             return this._root;
+        }
+
+        async setRoot(node: ProjectNode): Promise<void> {
+            this._root = new ProjectNode(node.context, node.project, vscode.TreeItemCollapsibleState.Expanded);
         }
 
         async getChildren(node?:ExplorerNode): Promise<ExplorerNode[]> {
@@ -107,6 +187,11 @@ export class DockerComposeProvider extends AutoRefreshTreeDataProvider<any> impl
             return node.getTreeItem();
         }
 
+        public async selectProject(node: ProjectNode): Promise<void> {
+            await this.setRoot(node);
+            await this.refresh();
+        }
+    
         public async startProject(node: ProjectNode): Promise<ChildProcess> {
             return node.project.start();
         }

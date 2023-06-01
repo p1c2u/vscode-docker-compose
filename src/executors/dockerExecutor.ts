@@ -2,6 +2,12 @@ import { ChildProcess } from "child_process";
 import { CommandExecutor } from "./commandExecutor";
 import { DockerExecutorError, DockerUnhandledError } from "./exceptions";
 
+export interface IDockerPsOptions {
+    projectName?: string;
+    projectDir?: string;
+    containerName?: string;
+}
+
 export class DockerExecutor extends CommandExecutor {
 
     private _shell: string;
@@ -24,8 +30,16 @@ export class DockerExecutor extends CommandExecutor {
         return this.executeSync(dockerCommand);
     }
 
-    public getPs(projectName: string, containerName: string, projectDir: string): string {
-        let dockerCommand = `ps -a --format '{{.Label "com.docker.compose.service"}}' --filter name=${containerName} --filter label=com.docker.compose.project=${projectName} --filter label=com.docker.compose.project.working_dir=${projectDir}`
+    public getPs(options?: IDockerPsOptions): string {
+        let dockerCommand = `ps -a --format '{{.Label "com.docker.compose.service"}}'`
+        if (options !== undefined) {
+            if (options.projectName !== undefined)
+                dockerCommand += ` --filter label=com.docker.compose.project=${options.projectName}`
+            if (options.projectDir !== undefined)
+                dockerCommand += ` --filter label=com.docker.compose.project.working_dir=${options.projectDir}`
+            if (options.containerName !== undefined)
+                dockerCommand += ` --filter name=${options.containerName}`
+        }
         return this.executeSync(dockerCommand);
     }
 

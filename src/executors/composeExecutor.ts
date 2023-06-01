@@ -2,14 +2,38 @@ import { ChildProcess } from "child_process";
 import { CommandExecutor } from "./commandExecutor";
 import { ComposeFileNotFound, ComposeCommandNotFound, ComposeExecutorError, ComposeUnhandledError } from "./exceptions";
 
+export interface IComposePsOptions {
+
+}
+
+export interface IComposePsResultPublisher {
+    Protocol: string;
+    PublishedPort: number;
+    TargetPort: number;
+    URL: string;
+}
+
+export interface IComposePsResult {
+    Command: string;
+    Created: number;
+    ExitCode: number;
+    Health: string;
+    ID: string;
+    Image: string;
+    Name: string;
+    Project: string;
+    Service: string;
+    State: string;
+    Status: string;
+    Publishers: IComposePsResultPublisher[];
+}
+
 export class ComposeExecutor extends CommandExecutor {
 
     private _files: string[];
     private _shell: string;
 
-    constructor(name: string = null, files: string[] = [], shell: string = "/bin/sh", cwd: string = null) {
-        if (name !== null)
-            process.env.COMPOSE_PROJECT_NAME = name
+    constructor(files: string[] = [], shell: string = "/bin/sh", cwd: string = null) {
         super(cwd, process.env)
         this._files = files;
         this._shell = shell;
@@ -36,6 +60,12 @@ export class ComposeExecutor extends CommandExecutor {
     public getPs(): string {
         let composeCommand = `ps`;
         return this.executeSync(composeCommand);
+    }
+
+    public getPs2(options?: IComposePsOptions): IComposePsResult[] {
+        let dockerCommand = `ps -a --format json`
+        let result = this.executeSync(dockerCommand);
+        return JSON.parse(result)
     }
 
     public shell(serviceName: string): void {
