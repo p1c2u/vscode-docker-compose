@@ -1,3 +1,7 @@
+## 0.5.0
+- projects treeview
+- explorer view optimizations
+
 ## 0.4.2
 - containers view retouch
 
