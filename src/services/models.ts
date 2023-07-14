@@ -18,33 +18,33 @@ export class Service {
         this._containers = undefined;
     }
 
-    async getContainers(force: boolean = false): Promise<Container[]> {
+    async getContainers(force = false): Promise<Container[]> {
         if (this._containers === undefined || force) {
             await this.refreshContainers();
         }
         return this._containers;
     }
 
-    async _getContainers(force: boolean = false): Promise<Container[]> {
-        let containers = await this.project.getContainers(force);
-        let projectPattern = this.project.name + '-'
-        let servicePattern = projectPattern + this.name + '-';
+    async _getContainers(force = false): Promise<Container[]> {
+        const containers = await this.project.getContainers(force);
+        const projectPattern = this.project.name + '-';
+        const servicePattern = projectPattern + this.name + '-';
         return containers.filter((container) => {
             // standard container name
             if (container.name.startsWith(projectPattern)) {
                 return container.name.includes(servicePattern);
             // custom container name
             } else {
-                let name = this.getContainerServiceName(container.name);
+                const name = this.getContainerServiceName(container.name);
                 return name == this.name;
             }
         });
     }
 
     public getContainerServiceName(name: string) {
-        let options = {projectName: this.project.name, containerName: name, ProjectDir: this.project.cwd};
-        let resultString = this.dockerExecutor.getPs(options);
-        let linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
+        const options = {projectName: this.project.name, containerName: name, ProjectDir: this.project.cwd};
+        const resultString = this.dockerExecutor.getPs(options);
+        const linesString = resultString.split(/[\r\n]+/g).filter((item) => item);
         return linesString[0];
     }
 

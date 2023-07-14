@@ -1,6 +1,6 @@
 export class ExecutorError extends Error {
     constructor(public message: string, protected output: string) {
-        super()
+        super();
     }
 }
 

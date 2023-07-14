@@ -5,7 +5,7 @@ steps:
     disown -ar
   displayName: 'Start xvfb'
 
-- script: 'node node_modules/vscode/bin/test'
+- script: 'node ./out/test/runTest.js'
   displayName: 'Test: Run'
   env:
     DISPLAY: :10

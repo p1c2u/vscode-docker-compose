@@ -28,7 +28,7 @@ export class MessageNode extends ExplorerNode {
             else
                 item.iconPath = new ThemeIcon(this.iconId);
         if (this.tooltip !== undefined)
-            item.tooltip = this.tooltip
+            item.tooltip = this.tooltip;
         return item;
     }
 

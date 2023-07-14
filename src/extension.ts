@@ -37,98 +37,98 @@ export function activate(context: vscode.ExtensionContext) {
 
     telemetryClient.sendEvent("loadExtension");
 
-    let refreshExplorer = vscode.commands.registerCommand("docker-compose.explorer.refresh", () => {
+    const refreshExplorer = vscode.commands.registerCommand("docker-compose.explorer.refresh", () => {
         servicesProvider.refresh();
         telemetryClient.sendEvent("refreshExplorer");
     });
 
-    let shellService = vscode.commands.registerCommand("docker-compose.service.shell", (node: ServiceNode) => {
+    const shellService = vscode.commands.registerCommand("docker-compose.service.shell", (node: ServiceNode) => {
         servicesProvider.shellService(node);
         telemetryClient.sendEvent("shellService");
     });
 
-    let selectProject = vscode.commands.registerCommand("docker-compose.project.select", (node: ProjectNode) => {
+    const selectProject = vscode.commands.registerCommand("docker-compose.project.select", (node: ProjectNode) => {
         // projectsProvider.selectProject(node);
         servicesProvider.selectProject(node);
         telemetryClient.sendEvent("selectProject");
     });
 
-    let startProject = vscode.commands.registerCommand("docker-compose.project.start", (node: ProjectNode) => {
+    const startProject = vscode.commands.registerCommand("docker-compose.project.start", (node: ProjectNode) => {
         servicesProvider.startProject(node);
         telemetryClient.sendEvent("startProject");
     });
 
-    let stopProject = vscode.commands.registerCommand("docker-compose.project.stop", (node: ProjectNode) => {
+    const stopProject = vscode.commands.registerCommand("docker-compose.project.stop", (node: ProjectNode) => {
         servicesProvider.stopProject(node);
         telemetryClient.sendEvent("stopProject");
     });
 
-    let upProject = vscode.commands.registerCommand("docker-compose.project.up", (node: ProjectNode) => {
+    const upProject = vscode.commands.registerCommand("docker-compose.project.up", (node: ProjectNode) => {
         servicesProvider.upProject(node);
         telemetryClient.sendEvent("upProject");
     });
 
-    let downProject = vscode.commands.registerCommand("docker-compose.project.down", (node: ProjectNode) => {
+    const downProject = vscode.commands.registerCommand("docker-compose.project.down", (node: ProjectNode) => {
         servicesProvider.downProject(node);
         telemetryClient.sendEvent("downProject");
     });
 
-    let upService = vscode.commands.registerCommand("docker-compose.service.up", (node: ServiceNode) => {
+    const upService = vscode.commands.registerCommand("docker-compose.service.up", (node: ServiceNode) => {
         servicesProvider.upService(node);
         telemetryClient.sendEvent("upService");
     });
 
-    let downService = vscode.commands.registerCommand("docker-compose.service.down", (node: ServiceNode) => {
+    const downService = vscode.commands.registerCommand("docker-compose.service.down", (node: ServiceNode) => {
         servicesProvider.downService(node);
         telemetryClient.sendEvent("downService");
     });
 
-    let startService = vscode.commands.registerCommand("docker-compose.service.start", (node: ServiceNode) => {
+    const startService = vscode.commands.registerCommand("docker-compose.service.start", (node: ServiceNode) => {
         servicesProvider.startService(node);
         telemetryClient.sendEvent("startService");
     });
 
-    let stopService = vscode.commands.registerCommand("docker-compose.service.stop", (node: ServiceNode) => {
+    const stopService = vscode.commands.registerCommand("docker-compose.service.stop", (node: ServiceNode) => {
         servicesProvider.stopService(node);
         telemetryClient.sendEvent("stopService");
     });
 
-    let restartService = vscode.commands.registerCommand("docker-compose.service.restart", (node: ServiceNode) => {
+    const restartService = vscode.commands.registerCommand("docker-compose.service.restart", (node: ServiceNode) => {
         servicesProvider.restartService(node);
         telemetryClient.sendEvent("restartService");
     });
 
-    let buildService = vscode.commands.registerCommand("docker-compose.service.build", (node: ServiceNode) => {
+    const buildService = vscode.commands.registerCommand("docker-compose.service.build", (node: ServiceNode) => {
         servicesProvider.buildService(node);
         telemetryClient.sendEvent("buildService");
     });
 
-    let killService = vscode.commands.registerCommand("docker-compose.service.kill", (node: ServiceNode) => {
+    const killService = vscode.commands.registerCommand("docker-compose.service.kill", (node: ServiceNode) => {
         servicesProvider.killService(node);
         telemetryClient.sendEvent("killService");
     });
 
-    let attachContainer = vscode.commands.registerCommand("docker-compose.container.attach", (node: ContainerNode) => {
+    const attachContainer = vscode.commands.registerCommand("docker-compose.container.attach", (node: ContainerNode) => {
         servicesProvider.attachContainer(node);
         telemetryClient.sendEvent("attachContainer");
     });
 
-    let logsContainer = vscode.commands.registerCommand("docker-compose.container.logs", (node: ContainerNode) => {
+    const logsContainer = vscode.commands.registerCommand("docker-compose.container.logs", (node: ContainerNode) => {
         servicesProvider.logsContainer(node);
         telemetryClient.sendEvent("logsContainer");
     });
 
-    let startContainer = vscode.commands.registerCommand("docker-compose.container.start", (node: ContainerNode) => {
+    const startContainer = vscode.commands.registerCommand("docker-compose.container.start", (node: ContainerNode) => {
         servicesProvider.startContainer(node);
         telemetryClient.sendEvent("startContainer");
     });
 
-    let stopContainer = vscode.commands.registerCommand("docker-compose.container.stop", (node: ContainerNode) => {
+    const stopContainer = vscode.commands.registerCommand("docker-compose.container.stop", (node: ContainerNode) => {
         servicesProvider.stopContainer(node);
         telemetryClient.sendEvent("stopContainer");
     });
 
-    let killContainer = vscode.commands.registerCommand("docker-compose.container.kill", (node: ContainerNode) => {
+    const killContainer = vscode.commands.registerCommand("docker-compose.container.kill", (node: ContainerNode) => {
         servicesProvider.killContainer(node);
         telemetryClient.sendEvent("killContainer");
     });
@@ -151,7 +151,4 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(startContainer);
     context.subscriptions.push(stopContainer);
     context.subscriptions.push(killContainer);
-}
-
-export function deactivate() {
 }

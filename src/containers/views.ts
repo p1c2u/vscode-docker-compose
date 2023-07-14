@@ -65,7 +65,7 @@ export class ContainerNode extends ComposeNode {
             iconColorId = "problemsErrorIcon.foreground";
             tooltipColor = "#ff9999";
         }
-        let iconColor = new ThemeColor(iconColorId);
+        const iconColor = new ThemeColor(iconColorId);
         item.iconPath = new ThemeIcon(iconId, iconColor);
         item.tooltip.appendMarkdown(`\n<span style="color:${tooltipColor};">${this.container.status}</span>`);
 
