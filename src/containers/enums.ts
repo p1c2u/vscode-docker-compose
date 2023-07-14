@@ -1,7 +1,16 @@
 export enum ContainerState {
+    Created = "Created",
+    Running = "Running",
     Paused = "Paused",
-    restarting = "Restarting",
-    Ghost = "Ghost",
-    Up = "Up",
-    Exit = "Exit",
+    Restarting = "Restarting",
+    Removing = "Removing",
+    Exited = "Exited",
+    Dead = "Dead",
+    Unknown = "Unknown",
+}
+
+export enum ContainerHealth {
+    Starting = "Starting",
+    Healthy = "Healthy",
+    Unhealthy = "Unhealthy",
 }

@@ -58,6 +58,16 @@ export class DockerExecutor extends CommandExecutor {
         return this.execute(dockerCommand);
     }
 
+    public pause(name: string): ChildProcess {
+        let dockerCommand = `pause ${name}`
+        return this.execute(dockerCommand);
+    }
+
+    public unpause(name: string): ChildProcess {
+        let dockerCommand = `unpause ${name}`
+        return this.execute(dockerCommand);
+    }
+
     public stop(name: string): ChildProcess {
         let dockerCommand = `stop ${name}`
         return this.execute(dockerCommand);

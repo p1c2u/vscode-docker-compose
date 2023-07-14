@@ -1,5 +1,5 @@
 import { ChildProcess } from "child_process";
-import { ContainerState } from "../containers/enums";
+import { ContainerHealth, ContainerState } from "../containers/enums";
 import { DockerExecutor } from "../executors/dockerExecutor";
 
 export class Container {
@@ -14,11 +14,27 @@ export class Container {
     }
 
     get state(): ContainerState {
-        return this.status.startsWith('Up') ? ContainerState.Up : ContainerState.Exit;
+        if (this.status.startsWith('Up'))
+            return this.status.includes('(Paused)') ? ContainerState.Paused : ContainerState.Running;
+        if (this.status.startsWith('Created'))
+            return ContainerState.Created;
+        if (this.status.startsWith('Exited'))
+            return ContainerState.Exited;
+        if (this.status.startsWith('Dead'))
+            return ContainerState.Dead;
+        if (this.status.startsWith('Restarting'))
+            return ContainerState.Restarting;
+        if (this.status.startsWith('Removal'))
+            return ContainerState.Removing;
+        return ContainerState.Unknown;
     }
 
-    get healthy(): boolean | null {
-        return this.status.includes('(healthy)') ? true : this.status.includes('(unhealthy)') ? false : null;
+    get up(): boolean {
+        return this.status.startsWith('Up')
+    }
+
+    get health(): ContainerHealth | null {
+        return this.status.includes('(healthy)') ? ContainerHealth.Healthy : this.status.includes('(unhealthy)') ? ContainerHealth.Unhealthy : null;
     }
 
     public attach(): void {
@@ -31,6 +47,14 @@ export class Container {
 
     public start(): ChildProcess {
         return this.executor.start(this.name);
+    }
+
+    public pause(): ChildProcess {
+        return this.executor.pause(this.name);
+    }
+
+    public unpause(): ChildProcess {
+        return this.executor.unpause(this.name);
     }
 
     public stop(): ChildProcess {

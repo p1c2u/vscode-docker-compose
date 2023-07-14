@@ -16,6 +16,6 @@ export const emptyConfig: IDockerComposeConfig = {
     autoRefreshInterval: 10000,
     showDockerCompose: true,
     enableTelemetry: false,
-    shell: "/bin/sh",
+    shell: "sh -c 'clear; (bash || ash || sh)'",
     files: ["docker-compose.yml"]
 }

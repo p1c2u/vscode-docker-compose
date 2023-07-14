@@ -1,6 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState, ExtensionContext, MarkdownString, ThemeIcon, ThemeColor, Color } from "vscode";
 import { ResourceType } from "../enums";
-import { ContainerState } from "../containers/enums";
+import { ContainerHealth, ContainerState } from "../containers/enums";
 import { Container } from "../containers/models";
 import { ComposeNode } from "../compose/views";
 
@@ -31,7 +31,7 @@ export class ContainerNode extends ComposeNode {
 
         // custom iconPath
         // var iconPath = this.context.asAbsolutePath('resources/service-exit.png');
-        // if (this.container.state == ContainerState.Up) {
+        // if (this.container.up) {
         //     item.contextValue = ResourceType.RunningContainer;
 
         //     var iconPath = this.context.asAbsolutePath('resources/service-up-unhealthy.png');
@@ -46,10 +46,15 @@ export class ContainerNode extends ComposeNode {
         let iconId: string;
         let iconColorId: string;
         let tooltipColor: string;
-        if (this.container.state == ContainerState.Up) {
+        item.contextValue = ResourceType.Container;
+        if (this.container.state === ContainerState.Created) {
+            iconId = "vm";
+            iconColorId = "icon.foreground";
+            tooltipColor = "#999999";
+        } else if (this.container.state === ContainerState.Running) {
             item.contextValue = ResourceType.RunningContainer;
 
-            if (this.container.healthy) {
+            if (this.container.health === ContainerHealth.Healthy) {
                 iconId = "vm-running";
                 iconColorId = "debugIcon.startForeground";
                 tooltipColor = "#99ff99";
@@ -58,11 +63,15 @@ export class ContainerNode extends ComposeNode {
                 iconColorId = "problemsWarningIcon.foreground";
                 tooltipColor = "#ffc600";
             }
+        } else if (this.container.state === ContainerState.Paused) {
+            iconId = "vm-outline";
+            iconColorId = "debugIcon.pauseForeground";
+            tooltipColor = "#75beff";
         } else {
             item.contextValue = ResourceType.ExitedContainer;
     
             iconId = "vm";
-            iconColorId = "problemsErrorIcon.foreground";
+            iconColorId = "debugIcon.stopForeground";
             tooltipColor = "#ff9999";
         }
         let iconColor = new ThemeColor(iconColorId);

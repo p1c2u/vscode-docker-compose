@@ -75,18 +75,38 @@ export class ComposeExecutor extends CommandExecutor {
         this.runInTerminal(composeCommand, true, terminalName);
     }
 
+    public create(serviceName?: string): ChildProcess {
+        let composeCommand = serviceName === undefined ? `create` : `create ${serviceName}`;
+        return this.execute(composeCommand);
+    }
+
     public up(serviceName?: string): ChildProcess {
         let composeCommand = serviceName === undefined ? `up --no-recreate` : `up --no-recreate ${serviceName}`;
         return this.execute(composeCommand);
     }
 
     public down(serviceName?: string): ChildProcess {
-        let composeCommand = serviceName === undefined ? `down` : `down ${serviceName}`;
+        let composeCommand = serviceName === undefined ? `down` : `rm --force --stop ${serviceName}`;
+        return this.execute(composeCommand);
+    }
+
+    public rm(serviceName?: string): ChildProcess {
+        let composeCommand = serviceName === undefined ? `rm --force` : `rm --force ${serviceName}`;
         return this.execute(composeCommand);
     }
 
     public start(serviceName?: string): ChildProcess {
         let composeCommand = serviceName === undefined ? `start` : `start ${serviceName}`
+        return this.execute(composeCommand);
+    }
+
+    public pause(serviceName?: string): ChildProcess {
+        let composeCommand = serviceName === undefined ? `pause` : `pause ${serviceName}`
+        return this.execute(composeCommand);
+    }
+
+    public unpause(serviceName?: string): ChildProcess {
+        let composeCommand = serviceName === undefined ? `unpause` : `unpause ${serviceName}`
         return this.execute(composeCommand);
     }
 

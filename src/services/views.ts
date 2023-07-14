@@ -33,6 +33,8 @@ export class ServiceNode extends ComposeNode {
         const item = new TreeItem(this.service.name, TreeItemCollapsibleState.Expanded);
         // item.iconPath = this.iconPath;
         item.contextValue = ResourceType.Service;
+        if (await this.service.hasContainers())
+            item.contextValue = ResourceType.CreatedService;
         return item;
     }
 }

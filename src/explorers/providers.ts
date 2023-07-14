@@ -215,7 +215,13 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
         public async shellService(node: ServiceNode): Promise<void> {
             node.service.shell();
         }
-    
+
+        public async createService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.create();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+
         public async upService(node: ServiceNode): Promise<ChildProcess> {
             let child_process = node.service.up();
             child_process.on('close', this.getRefreshCallable(node));
@@ -228,6 +234,12 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
             return child_process;
         }
     
+        public async rmService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.rm();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+    
         public async buildService(node: ServiceNode): Promise<ChildProcess> {
             let child_process = node.service.build();
             child_process.on('close', this.getRefreshCallable(node));
@@ -236,6 +248,18 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
     
         public async startService(node: ServiceNode): Promise<ChildProcess> {
             let child_process = node.service.start();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+    
+        public async pauseService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.pause();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+    
+        public async unpauseService(node: ServiceNode): Promise<ChildProcess> {
+            let child_process = node.service.unpause();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
@@ -276,6 +300,18 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
 
         public async startContainer(node: ContainerNode): Promise<ChildProcess> {
             let child_process = node.container.start();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+    
+        public async pauseContainer(node: ContainerNode): Promise<ChildProcess> {
+            let child_process = node.container.pause();
+            child_process.on('close', this.getRefreshCallable(node));
+            return child_process;
+        }
+    
+        public async unpauseContainer(node: ContainerNode): Promise<ChildProcess> {
+            let child_process = node.container.unpause();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }

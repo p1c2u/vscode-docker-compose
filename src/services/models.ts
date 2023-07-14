@@ -18,6 +18,11 @@ export class Service {
         this._containers = undefined;
     }
 
+    async hasContainers(): Promise<boolean> {
+        let containers = await this.getContainers(false);
+        return Boolean(containers.length);
+    }
+
     async getContainers(force: boolean = false): Promise<Container[]> {
         if (this._containers === undefined || force) {
             await this.refreshContainers();
@@ -56,6 +61,10 @@ export class Service {
         this.composeExecutor.shell(this.name);
     }
 
+    public create(): ChildProcess {
+        return this.composeExecutor.create(this.name);
+    }
+
     public up(): ChildProcess {
         return this.composeExecutor.up(this.name);
     }
@@ -64,8 +73,20 @@ export class Service {
         return this.composeExecutor.down(this.name);
     }
 
+    public rm(): ChildProcess {
+        return this.composeExecutor.rm(this.name);
+    }
+
     public start(): ChildProcess {
         return this.composeExecutor.start(this.name);
+    }
+
+    public pause(): ChildProcess {
+        return this.composeExecutor.pause(this.name);
+    }
+
+    public unpause(): ChildProcess {
+        return this.composeExecutor.unpause(this.name);
     }
 
     public stop(): ChildProcess {

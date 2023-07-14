@@ -6,6 +6,7 @@ export enum ResourceType {
     Project = "docker-compose:project",
     Services = "docker-compose:services",
     Service = "docker-compose:service",
+    CreatedService = "docker-compose:created-service",
     Container = "docker-compose:container",
     RunningContainer = "docker-compose:running-container",
     ExitedContainer = "docker-compose:exited-container"

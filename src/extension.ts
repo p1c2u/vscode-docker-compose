@@ -73,6 +73,11 @@ export function activate(context: vscode.ExtensionContext) {
         telemetryClient.sendEvent("downProject");
     });
 
+    let createService = vscode.commands.registerCommand("docker-compose.service.create", (node: ServiceNode) => {
+        servicesProvider.createService(node);
+        telemetryClient.sendEvent("createService");
+    });
+
     let upService = vscode.commands.registerCommand("docker-compose.service.up", (node: ServiceNode) => {
         servicesProvider.upService(node);
         telemetryClient.sendEvent("upService");
@@ -88,9 +93,24 @@ export function activate(context: vscode.ExtensionContext) {
         telemetryClient.sendEvent("startService");
     });
 
+    let pauseService = vscode.commands.registerCommand("docker-compose.service.pause", (node: ServiceNode) => {
+        servicesProvider.pauseService(node);
+        telemetryClient.sendEvent("pauseService");
+    });
+
+    let unpauseService = vscode.commands.registerCommand("docker-compose.service.unpause", (node: ServiceNode) => {
+        servicesProvider.unpauseService(node);
+        telemetryClient.sendEvent("unpauseService");
+    });
+
     let stopService = vscode.commands.registerCommand("docker-compose.service.stop", (node: ServiceNode) => {
         servicesProvider.stopService(node);
         telemetryClient.sendEvent("stopService");
+    });
+
+    let rmService = vscode.commands.registerCommand("docker-compose.service.rm", (node: ServiceNode) => {
+        servicesProvider.rmService(node);
+        telemetryClient.sendEvent("rmService");
     });
 
     let restartService = vscode.commands.registerCommand("docker-compose.service.restart", (node: ServiceNode) => {
@@ -123,6 +143,16 @@ export function activate(context: vscode.ExtensionContext) {
         telemetryClient.sendEvent("startContainer");
     });
 
+    let pauseContainer = vscode.commands.registerCommand("docker-compose.container.pause", (node: ContainerNode) => {
+        servicesProvider.pauseContainer(node);
+        telemetryClient.sendEvent("pauseContainer");
+    });
+
+    let unpauseContainer = vscode.commands.registerCommand("docker-compose.container.unpause", (node: ContainerNode) => {
+        servicesProvider.unpauseContainer(node);
+        telemetryClient.sendEvent("unpauseContainer");
+    });
+
     let stopContainer = vscode.commands.registerCommand("docker-compose.container.stop", (node: ContainerNode) => {
         servicesProvider.stopContainer(node);
         telemetryClient.sendEvent("stopContainer");
@@ -139,16 +169,22 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(startProject);
     context.subscriptions.push(stopProject);
     context.subscriptions.push(shellService);
+    context.subscriptions.push(createService);
     context.subscriptions.push(upService);
     context.subscriptions.push(downService);
     context.subscriptions.push(startService);
+    context.subscriptions.push(pauseService);
+    context.subscriptions.push(unpauseService);
     context.subscriptions.push(stopService);
+    context.subscriptions.push(rmService);
     context.subscriptions.push(restartService);
     context.subscriptions.push(buildService);
     context.subscriptions.push(killService);
     context.subscriptions.push(attachContainer);
     context.subscriptions.push(logsContainer);
     context.subscriptions.push(startContainer);
+    context.subscriptions.push(pauseContainer);
+    context.subscriptions.push(unpauseContainer);
     context.subscriptions.push(stopContainer);
     context.subscriptions.push(killContainer);
 }
