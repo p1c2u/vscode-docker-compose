@@ -6,4 +6,4 @@ steps:
   displayName: 'Source: Build'
   inputs:
     command: custom
-    customCommand: run build
+    customCommand: run compile

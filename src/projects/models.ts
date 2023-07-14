@@ -23,7 +23,7 @@ export class Project {
         public readonly name: string,
         public readonly cwd: string = null,
         files: string[] = [],
-        shell: string = "/bin/sh"
+        shell = "/bin/sh"
     ) {
         this._id = Math.random();
         this._files = files;
@@ -36,7 +36,7 @@ export class Project {
         this.composeExecutor = new ComposeExecutor(this._files, this._shell, this.cwd);
     }
 
-    async getServices(force: boolean = false): Promise<Service[]> {
+    async getServices(force = false): Promise<Service[]> {
         if (this._services === undefined || force) {
             await this.refreshServices();
         }
@@ -48,15 +48,14 @@ export class Project {
     }
 
     async _getServices(): Promise<Service[]> {
-        let servicesString = this.composeExecutor.getConnfigServices();
-        let linesString = servicesString.split(/[\r\n]+/g).filter((item) => item)
-        let that = this;
-        return linesString.map(function (serviceString, index, array) {
-            return new Service(that, serviceString, that.dockerExecutor, that.composeExecutor);
+        const servicesString = this.composeExecutor.getConnfigServices();
+        const linesString = servicesString.split(/[\r\n]+/g).filter(item => item);
+        return linesString.map(serviceString =>  {
+            return new Service(this, serviceString, this.dockerExecutor, this.composeExecutor);
         });
     }
 
-    async getContainers(force: boolean = false): Promise<Container[]> {
+    async getContainers(force = false): Promise<Container[]> {
         if (this._containers === undefined || force) {
             await this.refreshContainers();
         }
@@ -68,8 +67,8 @@ export class Project {
     }
 
     async _getContainers2(): Promise<Container[]> {
-        let config = ["docker-compose.yml", "docker-compose.yaml"]
-        let result = await ps({cwd: this.cwd, log: true, config: config, commandOptions: ["--all"]});
+        const config = ["docker-compose.yml", "docker-compose.yaml"];
+        const result = await ps({cwd: this.cwd, log: true, config: config, commandOptions: ["--all"]});
         return result.data.services.map((service) => {
             const ports = service.ports.map((port) => port.exposed.port.toString());
             return new Container(
@@ -83,7 +82,7 @@ export class Project {
     }
 
     async _getContainers(): Promise<Container[]> {
-        let result = this.composeExecutor.getPs2();
+        const result = this.composeExecutor.getPs2();
         return result.map((container) => {
             return new Container(
                 this.dockerExecutor,
@@ -96,7 +95,7 @@ export class Project {
     }
 
     public filterServiceContainers(serviceName: string, containers: Container[]): Container[] {
-        let pattern = this.name + '_' + serviceName + '_';
+        const pattern = this.name + '_' + serviceName + '_';
         return containers.filter((container) => {
             return container.name.includes(pattern);
         });
@@ -135,13 +134,13 @@ export class Workspace {
     }
 
     public validate() {
-        let dockerExecutor = new DockerExecutor(this.shell);
-        dockerExecutor.getVersion()
-        let composeExecutor = new ComposeExecutor(this.files, this.shell);
-        composeExecutor.getVersion()
+        const dockerExecutor = new DockerExecutor(this.shell);
+        dockerExecutor.getVersion();
+        const composeExecutor = new ComposeExecutor(this.files, this.shell);
+        composeExecutor.getVersion();
     }
 
-    public getProjects(force: boolean = false): Project[] {
+    public getProjects(force = false): Project[] {
         if (this._projects === undefined || force)
             this.refreshProjects();
         return this._projects;
@@ -154,7 +153,7 @@ export class Workspace {
     private _getProjects(): Project[] {
         return this.workspaceFolders.map((folder) => {
             // project name from mapping or use workspace dir name
-            let name = this.projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');
+            const name = this.projectNames[folder.index] || folder.name.replace(/[^-_a-z0-9]/gi, '');
             return new Project(name, folder.uri.fsPath, this.files, this.shell);
         });
     }

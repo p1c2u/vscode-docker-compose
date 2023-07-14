@@ -75,11 +75,7 @@ export class DockerComposeProjectsProvider implements TreeDataProvider<ExplorerN
     }
 
     protected getRefreshCallable(node: ExplorerNode) {
-        let that = this;
-        async function refresh() {
-            await that.refresh(node);
-        }
-        return refresh;
+        return this.refresh.bind(node);
     }
 
     public getRoot(): ExplorerNode {
@@ -121,13 +117,13 @@ export class DockerComposeProjectsProvider implements TreeDataProvider<ExplorerN
     }
 
     public async upProject(node: ProjectNode): Promise<ChildProcess> {
-        let child_process = node.project.up();
+        const child_process = node.project.up();
         child_process.on('close', this.getRefreshCallable(node));
         return child_process;
     }
 
     public async downProject(node: ProjectNode): Promise<ChildProcess> {
-        let child_process = node.project.down();
+        const child_process = node.project.down();
         child_process.on('close', this.getRefreshCallable(node));
         return child_process;
     }
@@ -151,11 +147,7 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
         }
 
         protected getRefreshCallable(node: ExplorerNode) {
-            let that = this;
-            async function refresh() {
-                await that.refresh(node);
-            }
-            return refresh;
+            return this.refresh.bind(node);
         }
 
         public getRoot(): ExplorerNode {
@@ -201,13 +193,13 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
         }
     
         public async upProject(node: ProjectNode): Promise<ChildProcess> {
-            let child_process = node.project.up();
+            const child_process = node.project.up();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async downProject(node: ProjectNode): Promise<ChildProcess> {
-            let child_process = node.project.down();
+            const child_process = node.project.down();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
@@ -217,43 +209,43 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
         }
     
         public async upService(node: ServiceNode): Promise<ChildProcess> {
-            let child_process = node.service.up();
+            const child_process = node.service.up();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async downService(node: ServiceNode): Promise<ChildProcess> {
-            let child_process = node.service.down();
+            const child_process = node.service.down();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async buildService(node: ServiceNode): Promise<ChildProcess> {
-            let child_process = node.service.build();
+            const child_process = node.service.build();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async startService(node: ServiceNode): Promise<ChildProcess> {
-            let child_process = node.service.start();
+            const child_process = node.service.start();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async stopService(node: ServiceNode): Promise<ChildProcess> {
-            let child_process = node.service.stop();
+            const child_process = node.service.stop();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async restartService(node: ServiceNode): Promise<ChildProcess> {
-            let child_process = node.service.restart();
+            const child_process = node.service.restart();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async killService(node: ServiceNode): Promise<ChildProcess> {
-            let child_process = node.service.kill();
+            const child_process = node.service.kill();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
@@ -263,8 +255,8 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
         }
     
         public async logsContainer(node:ContainerNode): Promise<void> {
-            var setting: Uri = Uri.parse("untitled:" + node.container.name + ".logs");
-            var content = node.container.logs();
+            const setting: Uri = Uri.parse("untitled:" + node.container.name + ".logs");
+            const content = node.container.logs();
             vscode.workspace.openTextDocument(setting).then((doc: TextDocument) => {
                 window.showTextDocument(doc, 1, false).then(editor => {
                     editor.edit(edit => {
@@ -275,19 +267,19 @@ export class DockerComposeServicesProvider extends AutoRefreshTreeDataProvider<a
         }
 
         public async startContainer(node: ContainerNode): Promise<ChildProcess> {
-            let child_process = node.container.start();
+            const child_process = node.container.start();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async stopContainer(node: ContainerNode): Promise<ChildProcess> {
-            let child_process = node.container.stop();
+            const child_process = node.container.stop();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }
     
         public async killContainer(node: ContainerNode): Promise<ChildProcess> {
-            let child_process = node.container.kill();
+            const child_process = node.container.kill();
             child_process.on('close', this.getRefreshCallable(node));
             return child_process;
         }

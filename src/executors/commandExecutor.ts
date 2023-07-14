@@ -23,9 +23,9 @@ export class CommandExecutor {
         return '';
     }
 
-    public runInTerminal(subCommand: string, addNewLine: boolean = true, terminal: string = "Docker Compose"): void {
-        let baseCommand = this.getBaseCommand();
-        let command = `${baseCommand} ${subCommand}`
+    public runInTerminal(subCommand: string, addNewLine = true, terminal = "Docker Compose"): void {
+        const baseCommand = this.getBaseCommand();
+        const command = `${baseCommand} ${subCommand}`;
         if (this.terminals[terminal] === undefined ) {
             this.terminals[terminal] = vscode.window.createTerminal(terminal);
             this.terminals[terminal].sendText(command, addNewLine);
@@ -46,14 +46,14 @@ export class CommandExecutor {
     }
 
     public execute(subCommand: string): ChildProcess {
-        let baseCommand = this.getBaseCommand();
-        let command = `${baseCommand} ${subCommand}`
+        const baseCommand = this.getBaseCommand();
+        const command = `${baseCommand} ${subCommand}`;
         return this.exec(command);
     }
 
     public executeSync(subCommand: string) {
-        let baseCommand = this.getBaseCommand();
-        let command = `${baseCommand} ${subCommand}`
+        const baseCommand = this.getBaseCommand();
+        const command = `${baseCommand} ${subCommand}`;
         return this.execSync(command);
     }
 

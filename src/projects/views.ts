@@ -21,7 +21,7 @@ export class ProjectNode extends ComposeNode {
 
         this.resetChildren();
 
-        let services = await this.project.getServices(false);
+        const services = await this.project.getServices(false);
 
         this.children = services
             .map(service => new ServiceNode(this.context, service));
@@ -57,7 +57,7 @@ export class ProjectsNode extends ComposeNode {
         this.resetChildren();
 
         try {
-            this.workspace.validate()
+            this.workspace.validate();
         } catch (err) {
             return this.handleError(err);
         }

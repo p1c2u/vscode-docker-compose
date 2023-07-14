@@ -18,4 +18,4 @@ export const emptyConfig: IDockerComposeConfig = {
     enableTelemetry: false,
     shell: "/bin/sh",
     files: ["docker-compose.yml"]
-}
+};

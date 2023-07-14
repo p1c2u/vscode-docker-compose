@@ -23,7 +23,7 @@ export class ServiceNode extends ComposeNode {
 
         const containers = await this.service.getContainers(true);
 
-        let context = this.context;
+        const context = this.context;
         this.children = containers
             .map((container) => new ContainerNode(context, container));
         return this.children;
