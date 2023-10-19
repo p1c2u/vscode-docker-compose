@@ -65,7 +65,16 @@ export class ComposeExecutor extends CommandExecutor {
     public getPs2(options?: IComposePsOptions): IComposePsResult[] {
         const dockerCommand = `ps -a --format json`;
         const result = this.executeSync(dockerCommand);
-        return JSON.parse(result);
+        try {
+            // Docker Compose up to 2.20 format
+            return JSON.parse(result);
+        } catch(e:unknown) {
+            if (e instanceof SyntaxError) {
+                // Docker Compose 2.21+ format
+                return result.trim().split("\n").map(entry => JSON.parse(entry));
+            }
+            throw e;
+        }
     }
 
     public shell(serviceName: string): void {
