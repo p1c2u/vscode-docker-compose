@@ -1,3 +1,6 @@
+## 0.5.1
+- Docker Compose 2.21 format support
+
 ## 0.5.0
 - projects treeview
 - explorer view optimizations
